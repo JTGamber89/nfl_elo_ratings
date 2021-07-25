@@ -1,4 +1,4 @@
-# nfl_elo_data
+# nfl_elo_ratings
 Repo to contain data and development files for CMPINF 2130, Summer 2021 Final Project
 
 **This data is sourced from FiveThirtyEight via their GitHub page https://github.com/fivethirtyeight/data**
