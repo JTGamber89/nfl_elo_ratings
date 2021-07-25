@@ -13,7 +13,7 @@ library(teamcolors)
 nfl_elo <- readr::read_csv('https://raw.githubusercontent.com/JTG89/nfl_elo_ratings/main/nfl_elo_SB_era.csv', col_names = TRUE)
 
 ## Format date column using the lubridate package and store as separate columns
-nfl_elo_date <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .after = season) %>% 
+nfl_elo <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .after = season) %>% 
   mutate(month = lubridate::month(lubridate::mdy(date)), .after = year) %>%
   mutate(day = lubridate::day(lubridate::mdy(date)), .after = month) %>%
   mutate(day_of_week = lubridate::wday(lubridate::mdy(date), label = TRUE), .after = day)
@@ -89,3 +89,6 @@ nfl_elo$team2[nfl_elo$team2 == "WSH"] <- "Washington Redskins"
 #  filter(league == "nfl") %>% 
 #  mutate(name = ifelse(name == "Washington Redskins", "Washington Football Team", name)) %>% 
 #  mutate(name = ifelse(name == "Oakland Raiders", "Las Vegas Raiders", name))
+
+## Define variables to be used in server and ui
+nfl_seasons <- nfl_elo$season %>% unique

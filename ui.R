@@ -16,12 +16,12 @@ shinyUI(fluidPage(
     # Sidebar with a slider input for number of bins
     sidebarLayout(
         sidebarPanel(
-            sliderInput("bins",
-                        "Number of bins:",
-                        min = 1,
-                        max = 50,
-                        value = 30)
-        ),
+            selectInput("season",
+                        "NFL Season",
+                        choices = nfl_seasons,
+                        selected = nfl_seasons %>% last()
+                        )
+            ),
 
         # Main Panel containing ...
         mainPanel(
