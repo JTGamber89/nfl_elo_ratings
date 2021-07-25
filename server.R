@@ -10,10 +10,13 @@ library(shiny)
 # Define server logic required to draw a histogram
 shinyServer(function(input, output) {
 
-    output$distPlot <- renderPlot({
+    output$team_weekly_trace <- renderPlot({
 
         # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
+        x    <- nfl_elo %>% filter(season == selected_season,
+                                   team1 == selected_team | team2 == selected_team) %>% 
+                            
+                                   
         bins <- seq(min(x), max(x), length.out = input$bins + 1)
 
         # draw the histogram with the specified number of bins
