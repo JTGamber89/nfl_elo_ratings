@@ -23,9 +23,31 @@ shinyUI(fluidPage(
                         value = 30)
         ),
 
-        # Show a plot of the generated distribution
+        # Main Panel containing ...
         mainPanel(
-            plotOutput("distPlot")
+          
+            # Tab selection for team, QB, ...
+            tabsetPanel(type = 'tabs',
+                        tabPanel("Teams",
+                                 plotOutput("waiting_hist"),
+                                 plotOutput("eruptions_hist")),
+                        tabPanel("QBs",
+                                 plotOutput("erupt_vs_wait"),
+                                 sliderInput("scatter_marker_size",
+                                             "Marker Size",
+                                             min = 0.5,
+                                             max = 7.5,
+                                             step = 0.25,
+                                             value = 2.5),
+                                 sliderInput("scatter_marker_alpha",
+                                             "Marker Transparency:",
+                                             min = 0.1,
+                                             max = 1.0,
+                                             step = 0.1,
+                                             value = 1.0),
+                                 checkboxInput("scatter_add_kde",
+                                               "Include 2D Density Estimate",
+                                               value = FALSE)))
         )
     )
 ))
