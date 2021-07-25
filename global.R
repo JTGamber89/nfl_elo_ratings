@@ -10,9 +10,9 @@ library(tidyverse)
 library(teamcolors)
 
 ## Load in data set from Github
-nfl_elo <- readr::read_csv('https://raw.githubusercontent.com/JTG89/nfl_elo_data/main/nfl_elo_SB_era.csv', col_names = TRUE)
+nfl_elo <- readr::read_csv('https://raw.githubusercontent.com/JTG89/nfl_elo_ratings/main/nfl_elo_SB_era.csv', col_names = TRUE)
 
-## Format date column using the lubridate package
+## Format date column using the lubridate package and store as separate columns
 nfl_elo_date <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .after = season) %>% 
   mutate(month = lubridate::month(lubridate::mdy(date)), .after = year) %>%
   mutate(day = lubridate::day(lubridate::mdy(date)), .after = month) %>%
