@@ -13,9 +13,9 @@ shinyServer(function(input, output) {
     output$team_weekly_trace <- renderPlot({
 
         # generate bins based on input$bins from ui.R
-        x    <- nfl_elo %>% filter(season == selected_season,
-                                   team1 == selected_team | team2 == selected_team) %>% 
-                            
+        team_season <- nfl_elo %>% filter(season == selected_season,
+                                   team1 == selected_team | team2 == selected_team) %>%
+          rowid_to_column("Week")
                                    
         bins <- seq(min(x), max(x), length.out = input$bins + 1)
 

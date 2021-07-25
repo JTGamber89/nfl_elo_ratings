@@ -19,8 +19,12 @@ shinyUI(fluidPage(
             selectInput("selected_season",
                         "NFL Season",
                         choices = nfl_seasons,
-                        selected = nfl_seasons %>% last()
-                        )
+                        selected = nfl_seasons %>% last() ),
+            
+            selectInput("selected_team",
+                        "Team",
+                        choices = teams,
+                        selected = "Arizona Cardinals" )
             ),
 
         # Main Panel containing ...
