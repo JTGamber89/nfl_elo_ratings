@@ -91,4 +91,6 @@ nfl_elo$team2[nfl_elo$team2 == "WSH"] <- "Washington Redskins"
 #  mutate(name = ifelse(name == "Oakland Raiders", "Las Vegas Raiders", name))
 
 ## Define variables to be used in server and ui
-nfl_seasons <- nfl_elo$season %>% unique
+nfl_seasons <- nfl_elo$season %>% unique()
+teams <- nfl_elo$team1 %>% unique %>% sort()
+
