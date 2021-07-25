@@ -11,7 +11,7 @@ library(shiny)
 shinyUI(fluidPage(
 
     # Application title
-    titlePanel("Old Faithful Geyser Data"),
+    titlePanel("NFL Team and QB Performance in the Super Bowl Era"),
 
     # Sidebar with a slider input for number of bins
     sidebarLayout(
