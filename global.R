@@ -12,6 +12,12 @@ library(teamcolors)
 ## Load in data set from Github
 nfl_elo <- readr::read_csv('https://raw.githubusercontent.com/JTG89/nfl_elo_data/main/nfl_elo_SB_era.csv', col_names = TRUE)
 
+## Format date column using the lubridate package
+nfl_elo_date <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .after = season) %>% 
+  mutate(month = lubridate::month(lubridate::mdy(date)), .after = year) %>%
+  mutate(day = lubridate::day(lubridate::mdy(date)), .after = month) %>%
+  mutate(day_of_week = lubridate::wday(lubridate::mdy(date), label = TRUE), .after = day)
+
 ## Re-Define the team names in the data set as the full team name rather than the abbreviation
 nfl_elo$team1[nfl_elo$team1 == "ARI"] <- "Arizona Cardinals"
 nfl_elo$team1[nfl_elo$team1 == "ATL"] <- "Atlanta Falcons"
