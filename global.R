@@ -8,6 +8,7 @@
 ## Load necessary R libraries
 library(tidyverse)
 library(teamcolors)
+library(plotly)
 
 ## Load in data set from Github
 nfl_elo <- readr::read_csv('https://raw.githubusercontent.com/JTG89/nfl_elo_ratings/main/nfl_elo_SB_era.csv', col_names = TRUE)
@@ -90,7 +91,8 @@ nfl_elo$team2[nfl_elo$team2 == "WSH"] <- "Washington Redskins"
 #  mutate(name = ifelse(name == "Washington Redskins", "Washington Football Team", name)) %>% 
 #  mutate(name = ifelse(name == "Oakland Raiders", "Las Vegas Raiders", name))
 
-## Define variables to be used in server and ui
-nfl_seasons <- nfl_elo$season %>% unique()
-teams <- nfl_elo$team1 %>% unique %>% sort()
+nfl_seasons <- nfl_elo %>%
+  select('season') %>% 
+  distinct()
+  
 
