@@ -91,13 +91,7 @@ nfl_elo$team2[nfl_elo$team2 == "WSH"] <- "Washington Redskins"
 #  mutate(name = ifelse(name == "Washington Redskins", "Washington Football Team", name)) %>% 
 #  mutate(name = ifelse(name == "Oakland Raiders", "Las Vegas Raiders", name))
 
-nfl_seasons <- nfl_elo %>%
-  select('season') %>% 
-  distinct()
+nfl_seasons <- nfl_elo$season %>% unique()
 
-nfl_teams <- nfl_elo %>%
-  select('team1') %>% 
-  distinct() %>% 
-  arrange(team1)
-  
+nfl_teams <- nfl_elo$team1 %>% unique()
 
