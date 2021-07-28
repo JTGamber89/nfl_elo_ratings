@@ -97,6 +97,7 @@ nfl_seasons <- nfl_elo %>%
 
 nfl_teams <- nfl_elo %>%
   select('team1') %>% 
-  distinct()
+  distinct() %>% 
+  arrange(team1)
   
 
