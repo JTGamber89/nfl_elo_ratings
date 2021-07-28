@@ -94,5 +94,9 @@ nfl_elo$team2[nfl_elo$team2 == "WSH"] <- "Washington Redskins"
 nfl_seasons <- nfl_elo %>%
   select('season') %>% 
   distinct()
+
+nfl_teams <- nfl_elo %>%
+  select('team1') %>% 
+  distinct()
   
 
