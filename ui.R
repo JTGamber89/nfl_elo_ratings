@@ -7,51 +7,25 @@
 
 library(shiny)
 
-# Define UI for application that draws a histogram
-shinyUI(fluidPage(
-
-    # Application title
-    titlePanel("NFL Team and QB Performance in the Super Bowl Era"),
-
-    # Sidebar with a slider input for number of bins
-    sidebarLayout(
-        sidebarPanel(
-            selectInput("selected_season",
-                        "NFL Season",
-                        choices = nfl_seasons,
-                        selected = nfl_seasons %>% last() ),
-            
-            selectInput("selected_team",
-                        "Team",
-                        choices = teams,
-                        selected = "Arizona Cardinals" )
-            ),
-
-        # Main Panel containing ...
-        mainPanel(
-          
-            # Tab selection for team, QB, ...
-            tabsetPanel(type = 'tabs',
-                        tabPanel("Teams",
-                                 plotOutput("waiting_hist"),
-                                 plotOutput("eruptions_hist")),
-                        tabPanel("QBs",
-                                 plotOutput("erupt_vs_wait"),
-                                 sliderInput("scatter_marker_size",
-                                             "Marker Size",
-                                             min = 0.5,
-                                             max = 7.5,
-                                             step = 0.25,
-                                             value = 2.5),
-                                 sliderInput("scatter_marker_alpha",
-                                             "Marker Transparency:",
-                                             min = 0.1,
-                                             max = 1.0,
-                                             step = 0.1,
-                                             value = 1.0),
-                                 checkboxInput("scatter_add_kde",
-                                               "Include 2D Density Estimate",
-                                               value = FALSE)))
-        )
-    )
-))
+shinyUI(
+  navbarPage("Title",
+             tabPanel("Welcome!",
+                      includeMarkdown('welcome_page.md')),
+             tabPanel('Teams by Season',
+                      sidebarLayout(
+                        sidebarPanel(
+                          h3('Select Season'),
+                          selectInput('panel1_season',
+                                      'Select Season of Interest',
+                                      choices = nfl_seasons,
+                                      selected = tail(nfl_seasons, 1)),
+                          selectInput('panel1_team',
+                                      'Select Team of Interest',
+                                      choices = nfl_teams,
+                                      selected = nfl_teams[1])
+                        ),
+                        mainPanel()
+                      ))
+    
+  )
+)
