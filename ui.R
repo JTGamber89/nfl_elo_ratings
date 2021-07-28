@@ -11,20 +11,35 @@ shinyUI(
   navbarPage("Title",
              tabPanel("Welcome!",
                       includeMarkdown('welcome_page.md')),
-             tabPanel('Teams by Season',
+             tabPanel("Teams by Season",
                       sidebarLayout(
                         sidebarPanel(
-                          h3('Select Season'),
+                          # h3('Select Season and Team'),
                           selectInput('panel1_season',
-                                      'Select Season of Interest',
+                                      "Select Season of Interest",
                                       choices = nfl_seasons,
                                       selected = tail(nfl_seasons, 1)),
                           selectInput('panel1_team',
-                                      'Select Team of Interest',
+                                      "Select Team of Interest",
                                       choices = nfl_teams,
-                                      selected = nfl_teams[1])
+                                      selected = nfl_teams[1]),
+                          h3("Quarterback(s)"),
+                          # textOutput(),
+                          h3("Team Record"),
+                          h4("Overall:"),
+                          # textOutput(),
+                          h4("In Games Favored:"),
+                          # textOutput(),
+                          h4("In Games as the Underdog:"),
+                          # textOutput()
                         ),
-                        mainPanel()
+                        mainPanel(
+                          # plotOutput(),
+                          checkboxGroupInput('panel1_rsp',
+                                             "Choose Timeframe:",
+                                             c("Regular Season" = 'reg_season',
+                                               "Playoffs" = 'playoff'))
+                        )
                       ))
     
   )
