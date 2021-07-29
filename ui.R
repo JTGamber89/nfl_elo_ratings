@@ -41,6 +41,18 @@ shinyUI(
                                                "Playoffs" = 'playoff'))
                         )
                       ))
+             # tabPanel("QBs by Season",
+             #          sidebarLayout(
+             #            sidebarPanel(
+             #              selectInput('panel2_season',
+             #                          "Select Season of Interest",
+             #                          choices = nfl_seasons,
+             #                          selected = tail(nfl_seasons, 1)),
+             #              selectInput('panel2_qb',
+             #                          "Select QB of Interest",
+             #                          choices = ),
+             #            )
+             #          ))
     
   )
 )
