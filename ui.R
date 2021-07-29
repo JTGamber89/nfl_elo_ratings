@@ -30,7 +30,7 @@ shinyUI(
                           # textOutput(),
                           h4("In Games Favored:"),
                           # textOutput(),
-                          h4("In Games as the Underdog:"),
+                          h4("In Games as the Underdog:")
                           # textOutput()
                         ),
                         mainPanel(
@@ -40,19 +40,40 @@ shinyUI(
                                              c("Regular Season" = 'reg_season',
                                                "Playoffs" = 'playoff'))
                         )
+                      )),
+             tabPanel("QBs by Season",
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput('panel2_season',
+                                      "Select Season of Interest",
+                                      choices = nfl_seasons,
+                                      selected = tail(nfl_seasons, 1)),
+                          selectInput('panel2_qb',
+                                      "Select QB of Interest",
+                                      choices = list_qb,
+                                      selected = list_qb[1]),
+                          h3("Team(s) Played For:"),
+                          # textOutput(),
+                          h3("QB Record"),
+                          h4("Overall:"),
+                          # textOutput(),
+                          h4("With Team Favored:"),
+                          # textOutput(),
+                          h4("With Team as Underdog:"),
+                          # textOutput(),
+                          h4("As Higher Rated QB:"),
+                          # textOutput(),
+                          h4("As Lower Rated QB:")
+                          # textOutput()
+                        ),
+                        mainPanel(
+                          # plotOutput(),
+                          checkboxGroupInput('panel2_rsp',
+                                             "Choose Timeframe:",
+                                             c("Regular Season" = 'reg_season',
+                                               "Playoffs" = 'playoff'))
+                        )
                       ))
-             # tabPanel("QBs by Season",
-             #          sidebarLayout(
-             #            sidebarPanel(
-             #              selectInput('panel2_season',
-             #                          "Select Season of Interest",
-             #                          choices = nfl_seasons,
-             #                          selected = tail(nfl_seasons, 1)),
-             #              selectInput('panel2_qb',
-             #                          "Select QB of Interest",
-             #                          choices = ),
-             #            )
-             #          ))
     
   )
 )
