@@ -17,7 +17,8 @@ nfl_elo <- readr::read_csv('https://raw.githubusercontent.com/JTG89/nfl_elo_rati
 nfl_elo <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .after = season) %>% 
   mutate(month = lubridate::month(lubridate::mdy(date)), .after = year) %>%
   mutate(day = lubridate::day(lubridate::mdy(date)), .after = month) %>%
-  mutate(day_of_week = lubridate::wday(lubridate::mdy(date), label = TRUE), .after = day)
+  mutate(day_of_week = lubridate::wday(lubridate::mdy(date), label = TRUE), .after = day) %>% 
+  mutate(week_of_year = lubridate::week(lubridate::mdy(date)), .after = day_of_week)
 
 ## Re-Define the team names in the data set as the full team name rather than the abbreviation
 nfl_elo$team1[nfl_elo$team1 == "ARI"] <- "Arizona Cardinals"
@@ -93,5 +94,6 @@ nfl_elo$team2[nfl_elo$team2 == "WSH"] <- "Washington Redskins"
 
 nfl_seasons <- nfl_elo$season %>% unique()
 
-nfl_teams <- nfl_elo$team1 %>% unique()
+nfl_teams <- nfl_elo$team1 %>% unique() %>% sort()
 
+list_qb <- c(nfl_elo$qb1, nfl_elo$qb2) %>% unique() %>% sort()
