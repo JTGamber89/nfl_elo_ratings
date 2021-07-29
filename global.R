@@ -18,7 +18,9 @@ nfl_elo <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .aft
   mutate(month = lubridate::month(lubridate::mdy(date)), .after = year) %>%
   mutate(day = lubridate::day(lubridate::mdy(date)), .after = month) %>%
   mutate(day_of_week = lubridate::wday(lubridate::mdy(date), label = TRUE), .after = day) %>% 
-  mutate(week_of_year = lubridate::week(lubridate::mdy(date)), .after = day_of_week)
+  mutate(week_of_year = lubridate::isoweek(lubridate::mdy(date)), .after = day_of_week) %>% 
+  mutate(week_of_year = ifelse(day_of_week == 'Mon' | day_of_week == 'Tue' | day_of_week == 'Wed', week_of_year - 1, week_of_year))
+
 
 ## Re-Define the team names in the data set as the full team name rather than the abbreviation
 nfl_elo$team1[nfl_elo$team1 == "ARI"] <- "Arizona Cardinals"
