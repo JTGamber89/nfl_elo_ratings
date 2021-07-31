@@ -18,10 +18,10 @@ shinyServer(function(input, output, session) {
     
     active_teams <- nfl_elo %>%
       filter(season == selected_season) %>%
-      select(team1) %>%
-      dplyr::distinct(team1)
+      select(team) %>%
+      dplyr::distinct(team)
     
-    active_teams <- active_teams$team1 %>% sort()
+    active_teams <- active_teams$team %>% sort()
     
     updateSelectInput(session,
                       "panel1_team",
@@ -37,15 +37,25 @@ shinyServer(function(input, output, session) {
     
     active_qbs <- nfl_elo %>%
       filter(season == selected_season) %>%
-      select(qb1, qb2)
-    
-    active_qbs <- c(active_qbs$qb1, active_qbs$qb2) %>%
-      unique() %>% sort()
+      select(qb)
     
     updateSelectInput(session,
                       "panel2_qb",
                       choices = active_qbs,
                       selected = active_qbs[1])
+  })
+  
+  # Print teams QB played for
+  observe({
+    selected_season <- input$panel2_season
+    selected_qb <- input$panel2_qb
+    
+    teams_played_for <- nfl_elo %>% 
+      filter()
+  })
+  
+  output$panel2_teamsplayedfor <- renderText({
+    sprintf("")
   })
 
     

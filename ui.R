@@ -54,7 +54,7 @@ shinyUI(
                                       choices = list_qb,
                                       selected = list_qb[1]),
                           h3("Team(s) Played For:"),
-                          # textOutput(),
+                          textOutput('panel2_teamsplayedfor'),
                           h3("QB Record"),
                           h4("Overall:"),
                           # textOutput(),
