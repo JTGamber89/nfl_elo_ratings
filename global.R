@@ -21,6 +21,28 @@ nfl_elo <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .aft
   mutate(week_of_year = lubridate::isoweek(lubridate::mdy(date)), .after = day_of_week) %>% 
   mutate(week_of_year = ifelse(day_of_week == 'Mon' | day_of_week == 'Tue' | day_of_week == 'Wed', week_of_year - 1, week_of_year))
 
+# Build separate data frame to properly define the week of the season
+week_in_season <- nfl_elo %>%
+  arrange(season, year, week_of_year) %>% 
+  group_by(season, year, week_of_year) %>% 
+  summarize(num_games = n(),
+            num_wdays = n_distinct(day_of_week),
+            num_months = n_distinct(month),
+            num_dates = n_distinct(date)) %>% 
+  ungroup()
+
+week_in_season <- week_in_season %>% 
+  group_by(season) %>% 
+  mutate(week_of_season = 1:n()) %>% 
+  ungroup()
+
+# Join the week of the season to the main dataframe 
+nfl_elo <- nfl_elo %>% 
+  left_join(week_in_season %>%  select(season, year, week_of_year, week_of_season),
+                                       by = c('season', 'year', 'week_of_year'))
+# Reorder columns within data set
+nfl_elo <- nfl_elo[,c(1,2,3,4,5,6,7,36,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35)]
+
 
 ## Re-Define the team names in the data set as the full team name rather than the abbreviation
 nfl_elo$team1[nfl_elo$team1 == "ARI"] <- "Arizona Cardinals"
