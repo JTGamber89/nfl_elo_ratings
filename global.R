@@ -125,6 +125,6 @@ nfl_elo$team[nfl_elo$team == "WSH"] <- "Washington Redskins"
 
 nfl_seasons <- nfl_elo$season %>% unique()
 
-nfl_teams <- nfl_elo$team1 %>% unique() %>% sort()
+nfl_teams <- nfl_elo$team %>% unique() %>% sort()
 
-list_qb <- c(nfl_elo$qb1, nfl_elo$qb2) %>% unique() %>% sort()
+list_qb <- nfl_elo$qb %>% unique() %>% sort()
