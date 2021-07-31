@@ -78,6 +78,7 @@ shinyServer(function(input, output, session) {
       output$panel2_qb_record <- renderText({ sprintf("0-0-0") })
       output$panel2_qb_record_home <- renderText({ sprintf("0-0-0") })
       output$panel2_qb_record_away <- renderText({ sprintf("0-0-0") })
+      output$panel2_qb_record_fav <- renderText({ sprintf("0-0-0") })
     
       } else {
         
@@ -93,6 +94,7 @@ shinyServer(function(input, output, session) {
               record <- panel2_subset %>% count(result)
               record_home <- panel2_subset %>%filter(home_away == 'Home') %>%  count(result)
               record_away <- panel2_subset %>%filter(home_away == 'Away') %>%  count(result)
+              record_fav <- panel2_subset %>%filter(home_away == 'Away') %>%  count(result)
               
               # Case: Regular season only
             } else if (playoffs == 'reg_season'){
