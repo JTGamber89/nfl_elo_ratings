@@ -44,11 +44,19 @@ nfl_elo <- nfl_elo %>%
   left_join(week_in_season %>%  select(season, year, week_of_year, week_of_season),
                                        by = c('season', 'year', 'week_of_year'))
 # Reorder columns within data set
-nfl_elo <- nfl_elo[,c(1,2,3,4,5,6,7,36,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35)]
+nfl_elo <- nfl_elo[,c(1,2,3,4,5,6,7,36,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35)] %>% 
+  group_by(season, week_of_season, date) %>% mutate(game_of_day_id = 1:n(), .after =week_of_season) %>% ungroup()
+
+
+# Add column to track wins and losses
+nfl_elo <- nfl_elo %>% mutate(win_loss = ifelse(score1 > score2, 'team1',
+                                                ifelse(score1 == score2, 'tie', 'team2')))
 
 ## Re-order dataframe into longer format for home & away
 nfl_elo_home <- nfl_elo %>%  select(!contains('2')) %>% 
   mutate(home_away = 'Home', .after = 'team1') %>% 
+  mutate(result = ifelse(win_loss == 'team1', 'W', ifelse(win_loss == 'tie', 'tie', 'L'))) %>% 
+  select(!win_loss) %>% 
   rename(
     team = team1,
     elo_pre = elo1_pre,
@@ -67,6 +75,8 @@ nfl_elo_home <- nfl_elo %>%  select(!contains('2')) %>%
 
 nfl_elo_away <- nfl_elo %>%  select(!contains('1')) %>% 
   mutate(home_away = 'Away', .after = 'team2') %>% 
+  mutate(result = ifelse(win_loss == 'team2', 'W', ifelse(win_loss == 'tie', 'tie', 'L'))) %>% 
+  select(!win_loss) %>% 
   rename(
     team = team2,
     elo_pre = elo2_pre,
@@ -84,7 +94,7 @@ nfl_elo_away <- nfl_elo %>%  select(!contains('1')) %>%
   )
 
 nfl_elo <- rbind(nfl_elo_home, nfl_elo_away) %>% 
-  arrange(season, year, month, day)
+  arrange(season, year, month, day, game_of_day_id)
 
 ## Re-Define the team names in the data set as the full team name rather than the abbreviation
 nfl_elo$team[nfl_elo$team == "ARI"] <- "Arizona Cardinals"
