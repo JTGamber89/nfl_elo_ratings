@@ -69,59 +69,73 @@ shinyServer(function(input, output, session) {
     selected_qb <- input$panel2_qb
     playoffs <- input$panel2_rsp
     
+    panel2_subset <- nfl_elo %>% filter(season == selected_season, qb == selected_qb)
+    
     # Case: null set
     if (is.null(playoffs)){
       
       # show no record for null result
-      output$panel2_qb_record <- renderText({
-        sprintf("0-0-0")
-      })
+      output$panel2_qb_record <- renderText({ sprintf("0-0-0") })
+      output$panel2_qb_record_home <- renderText({ sprintf("0-0-0") })
+      output$panel2_qb_record_away <- renderText({ sprintf("0-0-0") })
+    
+      } else {
+        
+        # Case: Player did not make playoffs and playoffs are selected
+        if (length(playoffs) == 1 & playoffs == 'playoff' & plyr::empty(panel2_subset %>% filter(!is.na(playoff)))){
+          output$panel2_qb_record <- renderText({ sprintf("Did not qualify") })
+        
+          } else {
+          
+            # Case: Regular season AND playoffs
+            if (length(playoffs) == 2){
+              
+              record <- panel2_subset %>% count(result)
+              record_home <- panel2_subset %>%filter(home_away == 'Home') %>%  count(result)
+              record_away <- panel2_subset %>%filter(home_away == 'Away') %>%  count(result)
+              
+              # Case: Regular season only
+            } else if (playoffs == 'reg_season'){
+              
+              record <- panel2_subset %>% filter(is.na(playoff)) %>% count(result)
+              record_home <- panel2_subset %>% filter(is.na(playoff), home_away == 'Home') %>% count(result)
+              record_away <- panel2_subset %>% filter(is.na(playoff), home_away == 'Away') %>% count(result)
+              
+              # Case: playoffs only
+            } else if (playoffs == 'playoff'){
+              
+              record <- panel2_subset %>% filter(!is.na(playoff)) %>% count(result)
+              record_home <- panel2_subset %>% filter(!is.na(playoff), home_away == 'Home') %>% count(result)
+              record_away <- panel2_subset %>% filter(!is.na(playoff), home_away == 'Away') %>% count(result)
+            }
+            
+            # For non-null case, counts wins, losses, ties
+            win <- record %>% filter(result == 'W') %>% select(n) %>% as.numeric()
+            loss <- record %>% filter(result == 'L') %>% select(n) %>% as.numeric()
+            tie <- ifelse(nrow(record) == 2, 0, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+            output$panel2_qb_record <- renderText({ sprintf("%s-%s-%s", win, loss, tie) })
+            
+            win_home <- record_home %>% filter(result == 'W') %>% select(n) %>% as.numeric()
+            loss_home <- record_home %>% filter(result == 'L') %>% select(n) %>% as.numeric()
+            tie_home <- ifelse(nrow(record_home) == 2, 0, record_home %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+            output$panel2_qb_record_home <- renderText({ sprintf("%s-%s-%s", win_home, loss_home, tie_home) })
+            
+            win_away <- record_away %>% filter(result == 'W') %>% select(n) %>% as.numeric()
+            loss_away <- record_away %>% filter(result == 'L') %>% select(n) %>% as.numeric()
+            tie_away <- ifelse(nrow(record_away) == 2, 0, record_away %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+            output$panel2_qb_record_away <- renderText({ sprintf("%s-%s-%s", win_away, loss_away, tie_away) })
+            
+          
+          
+          
+        }
+        
+      
+      
     }
     
-    # Case: Not the null set
-    if (length(playoffs) == 1){
-      
-      # Case: Regular season only
-      if (playoffs == 'reg_season'){
-        record <- nfl_elo %>%
-          filter(season == selected_season,
-                 qb == selected_qb,
-                 is.na(playoff)) %>%
-          count(result)
-      
-      # Case: playoffs only
-      } else if (playoffs == 'playoff'){
-        record <- nfl_elo %>%
-          filter(season == selected_season,
-                 qb == selected_qb,
-                 !is.na(playoff)) %>%
-          count(result)
-      }
-      
-      # For non-null case, counts wins, losses, ties
-      win <- record %>% filter(result == 'W') %>% select(n) %>% as.numeric()
-      loss <- record %>% filter(result == 'L') %>% select(n) %>% as.numeric()
-      tie <- ifelse(nrow(record) == 2, 0, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
-      
-      output$panel2_qb_record <- renderText({
-        sprintf("%s-%s-%s", win, loss, tie)
-        })
-      
-    } else if (length(playoffs) == 2) {
-      record <- nfl_elo %>%
-        filter(season == selected_season,
-               qb == selected_qb) %>%
-        count(result)
-      
-      win <- record %>% filter(result == 'W') %>% select(n) %>% as.numeric()
-      loss <- record %>% filter(result == 'L') %>% select(n) %>% as.numeric()
-      tie <- ifelse(nrow(record) == 2, 0, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
-      
-      output$panel2_qb_record <- renderText({
-        sprintf("%s-%s-%s", win, loss, tie)
-        })
-      
-      }
+    
+
     
   })
 
