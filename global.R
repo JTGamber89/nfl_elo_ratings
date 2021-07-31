@@ -191,8 +191,8 @@ nfl_elo$opponent[nfl_elo$opponent == "WSH"] <- "Washington Redskins"
 
 ###### Selection Lists of Unique Values ######
 
-nfl_seasons <- nfl_elo_long$season %>% unique()
+nfl_seasons <- nfl_elo$season %>% unique()
 
-nfl_teams <- nfl_elo_long$team %>% unique() %>% sort()
+nfl_teams <- nfl_elo$team %>% unique() %>% sort()
 
-list_qb <- nfl_elo_long$qb %>% unique() %>% sort()
+list_qb <- nfl_elo$qb %>% unique() %>% sort()

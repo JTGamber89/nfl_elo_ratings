@@ -63,13 +63,13 @@ shinyUI(
                           h4("Away"),
                           textOutput('panel2_qb_record_away'),
                           h4("With Team Favored:"),
-                          # textOutput(),
+                          textOutput('panel2_qb_record_fav'),
                           h4("With Team as Underdog:"),
-                          # textOutput(),
+                          textOutput('panel2_qb_record_dog'),
                           h4("As Higher Rated QB:"),
-                          # textOutput(),
-                          h4("As Lower Rated QB:")
-                          # textOutput()
+                          textOutput('panel2_qb_record_higher'),
+                          h4("As Lower Rated QB:"),
+                          textOutput('panel2_qb_record_lower')
                         ),
                         mainPanel(
                           # plotOutput(),

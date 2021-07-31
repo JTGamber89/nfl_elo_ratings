@@ -79,6 +79,9 @@ shinyServer(function(input, output, session) {
       output$panel2_qb_record_home <- renderText({ sprintf("0-0-0") })
       output$panel2_qb_record_away <- renderText({ sprintf("0-0-0") })
       output$panel2_qb_record_fav <- renderText({ sprintf("0-0-0") })
+      output$panel2_qb_record_dog <- renderText({ sprintf("0-0-0") })
+      output$panel2_qb_record_higher <- renderText({ sprintf("0-0-0") })
+      output$panel2_qb_record_lower <- renderText({ sprintf("0-0-0") })
     
       } else {
         
@@ -94,7 +97,10 @@ shinyServer(function(input, output, session) {
               record <- panel2_subset %>% count(result)
               record_home <- panel2_subset %>%filter(home_away == 'Home') %>%  count(result)
               record_away <- panel2_subset %>%filter(home_away == 'Away') %>%  count(result)
-              record_fav <- panel2_subset %>%filter(home_away == 'Away') %>%  count(result)
+              record_fav <- panel2_subset %>%filter(elo_pre > opponent_elo_pre) %>%  count(result)
+              record_dog <- panel2_subset %>%filter(elo_pre < opponent_elo_pre) %>%  count(result)
+              record_higher <- panel2_subset %>%filter(qbelo_pre > opposing_qbelo_pre) %>%  count(result)
+              record_lower <- panel2_subset %>%filter(qbelo_pre < opposing_qbelo_pre) %>%  count(result)
               
               # Case: Regular season only
             } else if (playoffs == 'reg_season'){
@@ -102,6 +108,10 @@ shinyServer(function(input, output, session) {
               record <- panel2_subset %>% filter(is.na(playoff)) %>% count(result)
               record_home <- panel2_subset %>% filter(is.na(playoff), home_away == 'Home') %>% count(result)
               record_away <- panel2_subset %>% filter(is.na(playoff), home_away == 'Away') %>% count(result)
+              record_fav <- panel2_subset %>% filter(is.na(playoff), elo_pre > opponent_elo_pre) %>% count(result)
+              record_dog <- panel2_subset %>% filter(is.na(playoff), elo_pre < opponent_elo_pre) %>% count(result)
+              record_higher <- panel2_subset %>% filter(is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
+              record_lower <- panel2_subset %>% filter(is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
               
               # Case: playoffs only
             } else if (playoffs == 'playoff'){
@@ -109,39 +119,49 @@ shinyServer(function(input, output, session) {
               record <- panel2_subset %>% filter(!is.na(playoff)) %>% count(result)
               record_home <- panel2_subset %>% filter(!is.na(playoff), home_away == 'Home') %>% count(result)
               record_away <- panel2_subset %>% filter(!is.na(playoff), home_away == 'Away') %>% count(result)
+              record_fav <- panel2_subset %>% filter(!is.na(playoff), elo_pre > opponent_elo_pre) %>% count(result)
+              record_dog <- panel2_subset %>% filter(!is.na(playoff), elo_pre < opponent_elo_pre) %>% count(result)
+              record_higher <- panel2_subset %>% filter(!is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
+              record_lower <- panel2_subset %>% filter(!is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
             }
             
             # For non-null case, counts wins, losses, ties
-            win <- record %>% filter(result == 'W') %>% select(n) %>% as.numeric()
-            loss <- record %>% filter(result == 'L') %>% select(n) %>% as.numeric()
-            tie <- ifelse(nrow(record) == 2, 0, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+            win <- ifelse('W' %in% record$result, record %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
+            loss <- ifelse('L' %in% record$result, record %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
+            tie <- ifelse('tie' %in% record$result, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
             output$panel2_qb_record <- renderText({ sprintf("%s-%s-%s", win, loss, tie) })
             
-            win_home <- record_home %>% filter(result == 'W') %>% select(n) %>% as.numeric()
-            loss_home <- record_home %>% filter(result == 'L') %>% select(n) %>% as.numeric()
-            tie_home <- ifelse(nrow(record_home) == 2, 0, record_home %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+            win_home <- ifelse('W' %in% record_home$result, record_home %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
+            loss_home <- ifelse('L' %in% record_home$result, record_home %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
+            tie_home <- ifelse('tie' %in% record_home$result, record_home %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
             output$panel2_qb_record_home <- renderText({ sprintf("%s-%s-%s", win_home, loss_home, tie_home) })
             
-            win_away <- record_away %>% filter(result == 'W') %>% select(n) %>% as.numeric()
-            loss_away <- record_away %>% filter(result == 'L') %>% select(n) %>% as.numeric()
-            tie_away <- ifelse(nrow(record_away) == 2, 0, record_away %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+            win_away <- ifelse('W' %in% record_away$result, record_away %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
+            loss_away <- ifelse('L' %in% record_away$result, record_away %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
+            tie_away <- ifelse('tie' %in% record_away$result, record_away %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
             output$panel2_qb_record_away <- renderText({ sprintf("%s-%s-%s", win_away, loss_away, tie_away) })
             
-          
-          
+            win_fav <- ifelse('W' %in% record_fav$result, record_fav %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
+            loss_fav <- ifelse('L' %in% record_fav$result, record_fav %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
+            tie_fav <- ifelse('tie' %in% record_fav$result, record_fav %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
+            output$panel2_qb_record_fav <- renderText({ sprintf("%s-%s-%s", win_fav, loss_fav, tie_fav) })
+            
+            win_dog <- ifelse('W' %in% record_dog$result, record_dog %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
+            loss_dog <- ifelse('L' %in% record_dog$result, record_dog %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
+            tie_dog <- ifelse('tie' %in% record_dog$result, record_dog %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
+            output$panel2_qb_record_dog <- renderText({ sprintf("%s-%s-%s", win_dog, loss_dog, tie_dog) })
+            
+            win_higher <- ifelse('W' %in% record_higher$result, record_higher %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
+            loss_higher <- ifelse('L' %in% record_higher$result, record_higher %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
+            tie_higher <- ifelse('tie' %in% record_higher$result, record_higher %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
+            output$panel2_qb_record_higher <- renderText({ sprintf("%s-%s-%s", win_higher, loss_higher, tie_higher) })
+            
+            win_lower <- ifelse('W' %in% record_lower$result, record_lower %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
+            loss_lower <- ifelse('L' %in% record_lower$result, record_lower %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
+            tie_lower <- ifelse('tie' %in% record_lower$result, record_lower %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
+            output$panel2_qb_record_lower <- renderText({ sprintf("%s-%s-%s", win_lower, loss_lower, tie_lower) })
           
         }
-        
-      
-      
     }
-    
-    
-
-    
   })
-
-
-    
-  
 })
