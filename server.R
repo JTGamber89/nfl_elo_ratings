@@ -36,8 +36,9 @@ shinyServer(function(input, output, session) {
     selected_season <- input$panel2_season
     
     active_qbs <- nfl_elo %>%
-      filter(season == selected_season) %>%
-      select(qb)
+      filter(season == selected_season)
+    
+    active_qbs <- active_qbs$qb %>%  sort()
     
     updateSelectInput(session,
                       "panel2_qb",
