@@ -52,12 +52,79 @@ shinyServer(function(input, output, session) {
     selected_qb <- input$panel2_qb
     
     teams_played_for <- nfl_elo %>% 
-      filter()
+      filter(season == selected_season,
+             qb == selected_qb) %>% 
+      select(team) %>% dplyr::distinct()
+    
+    output$panel2_teamsplayedfor <- renderText({
+      sprintf("%s \n", teams_played_for)
+      })
+    
+  
   })
   
-  output$panel2_teamsplayedfor <- renderText({
-    sprintf("")
+  # Observe settings for Panel 2 to drive record and plotting
+  observe({
+    selected_season <- input$panel2_season
+    selected_qb <- input$panel2_qb
+    playoffs <- input$panel2_rsp
+    
+    # Case: null set
+    if (is.null(playoffs)){
+      
+      # show no record for null result
+      output$panel2_qb_record <- renderText({
+        sprintf("0-0-0")
+      })
+    }
+    
+    # Case: Not the null set
+    if (length(playoffs) == 1){
+      
+      # Case: Regular season only
+      if (playoffs == 'reg_season'){
+        record <- nfl_elo %>%
+          filter(season == selected_season,
+                 qb == selected_qb,
+                 is.na(playoff)) %>%
+          count(result)
+      
+      # Case: playoffs only
+      } else if (playoffs == 'playoff'){
+        record <- nfl_elo %>%
+          filter(season == selected_season,
+                 qb == selected_qb,
+                 !is.na(playoff)) %>%
+          count(result)
+      }
+      
+      # For non-null case, counts wins, losses, ties
+      win <- record %>% filter(result == 'W') %>% select(n) %>% as.numeric()
+      loss <- record %>% filter(result == 'L') %>% select(n) %>% as.numeric()
+      tie <- ifelse(nrow(record) == 2, 0, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+      
+      output$panel2_qb_record <- renderText({
+        sprintf("%s-%s-%s", win, loss, tie)
+        })
+      
+    } else if (length(playoffs) == 2) {
+      record <- nfl_elo %>%
+        filter(season == selected_season,
+               qb == selected_qb) %>%
+        count(result)
+      
+      win <- record %>% filter(result == 'W') %>% select(n) %>% as.numeric()
+      loss <- record %>% filter(result == 'L') %>% select(n) %>% as.numeric()
+      tie <- ifelse(nrow(record) == 2, 0, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric())
+      
+      output$panel2_qb_record <- renderText({
+        sprintf("%s-%s-%s", win, loss, tie)
+        })
+      
+      }
+    
   })
+
 
     
   
