@@ -37,8 +37,9 @@ shinyUI(
                           # plotOutput(),
                           checkboxGroupInput('panel1_rsp',
                                              "Choose Timeframe:",
-                                             c("Regular Season" = 'reg_season',
-                                               "Playoffs" = 'playoff'))
+                                             choices = c("Regular Season" = 'reg_season',
+                                                         "Playoffs" = 'playoff'),
+                                             selected = 'reg_season')
                         )
                       )),
              tabPanel("QBs by Season",
@@ -70,8 +71,19 @@ shinyUI(
                           # plotOutput(),
                           checkboxGroupInput('panel2_rsp',
                                              "Choose Timeframe:",
-                                             c("Regular Season" = 'reg_season',
-                                               "Playoffs" = 'playoff'))
+                                             choices = c("Regular Season" = 'reg_season',
+                                               "Playoffs" = 'playoff'),
+                                             selected = 'reg_season')
+                        )
+                      )),
+             tabPanel("QBs All-Time",
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput('panel4_qb',
+                                      "Select QB of Interest",
+                                      choices = list_qb,
+                                      selected = 'Bart Starr'),
+                          h3("Career Record")
                         )
                       ))
     
