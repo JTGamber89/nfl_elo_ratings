@@ -14,7 +14,6 @@ shinyUI(
              tabPanel("Teams by Season",
                       sidebarLayout(
                         sidebarPanel(
-                          # h3('Select Season and Team'),
                           selectInput('panel1_season',
                                       "Select Season of Interest",
                                       choices = nfl_seasons,
@@ -24,14 +23,22 @@ shinyUI(
                                       choices = nfl_teams,
                                       selected = nfl_teams[1]),
                           h3("Quarterback(s)"),
-                          # textOutput(),
+                          htmlOutput('panel1_qbs'),
                           h3("Team Record"),
                           h4("Overall:"),
-                          # textOutput(),
-                          h4("In Games Favored:"),
-                          # textOutput(),
-                          h4("In Games as the Underdog:")
-                          # textOutput()
+                          textOutput('panel1_record'),
+                          h4("Home:"),
+                          textOutput('panel1_record_home'),
+                          h4("Away:"),
+                          textOutput('panel1_record_away'),
+                          h4("As the Favorite:"),
+                          textOutput('panel1_record_fav'),
+                          h4("As the Underdog:"),
+                          textOutput('panel1_record_dog'),
+                          h4("With Higher-Rated QB:"),
+                          textOutput('panel1_record_higher'),
+                          h4("With Lower-Rated QB:"),
+                          textOutput('panel1_record_lower'),
                         ),
                         mainPanel(
                           # plotOutput(),
@@ -72,7 +79,7 @@ shinyUI(
                           textOutput('panel2_qb_record_lower')
                         ),
                         mainPanel(
-                          plotOutput('panel2_qb_season', height = "600px"),
+                          plotlyOutput('panel2_qb_season', height = "600px"),
                           checkboxGroupInput('panel2_rsp',
                                              "Choose Timeframe:",
                                              choices = c("Regular Season" = 'reg_season',
