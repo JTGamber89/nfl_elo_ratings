@@ -164,4 +164,49 @@ shinyServer(function(input, output, session) {
         }
     }
   })
+  
+  # Plot QB Performance Trend
+  output$panel2_qb_season <- renderPlot({
+    
+    if(length(input$panel2_rsp) == 2) {
+      panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb)
+      league_elo <- nfl_elo %>% filter(season == input$panel2_season)
+      xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', 'W', 'D', 'C', 'S')
+      } 
+    else if (input$panel2_rsp == 'reg_season') {
+      panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, is.na(playoff))
+      league_elo <- nfl_elo %>% filter(season == input$panel2_season, is.na(playoff))
+      xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17')
+    }
+    else if (input$panel2_rsp == 'playoff') {
+      panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, !is.na(playoff))
+      league_elo <- nfl_elo %>% filter(season == input$panel2_season, !is.na(playoff))
+      xlabels = c('W', 'D', 'C', 'S')
+    }
+    
+    
+    if (is.na(input$panel2_rsp)){
+      ggplot() +
+        theme_bw()
+    } else {
+      ggplot(mapping = aes_string(x = as.factor(panel2_data$week_of_season))) +
+        geom_violin(mapping = aes_string(x = as.factor(league_elo$week_of_season), y = league_elo$qbelo_pre),
+                    alpha = 0.4, fill = 'grey', scale = 'width') +
+        geom_point(mapping = aes_string(y = panel2_data$qbelo_pre), color = 'green', size = 3) +
+        geom_point(mapping = aes_string(y = panel2_data$qbelo_post), color = 'red', size = 3) +
+        geom_segment(mapping = aes_string(x = panel2_data$week_of_season, y = panel2_data$qbelo_pre,
+                                          xend = panel2_data$week_of_season, yend = panel2_data$qbelo_post),
+                     arrow = arrow(length = unit(0.02, "npc"))) +
+        #xlim(0, max(panel2_data$week_of_season)) +
+        ylim(min(league_elo$qbelo_pre, league_elo$qbelo_post), max(league_elo$qbelo_pre, league_elo$qbelo_post)) +
+        xlab('Week of the Season') +
+        scale_x_discrete(labels = xlabels) +
+        ylab('QB Elo Rating Before and After Each Game') +
+        theme_bw()
+    }
+    
+    
+    
+  })
+  
 })

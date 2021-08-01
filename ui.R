@@ -72,7 +72,7 @@ shinyUI(
                           textOutput('panel2_qb_record_lower')
                         ),
                         mainPanel(
-                          # plotOutput(),
+                          plotOutput('panel2_qb_season', height = "600px"),
                           checkboxGroupInput('panel2_rsp',
                                              "Choose Timeframe:",
                                              choices = c("Regular Season" = 'reg_season',
