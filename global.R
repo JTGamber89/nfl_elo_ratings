@@ -21,8 +21,7 @@ nfl_elo <- nfl_elo %>% mutate(year = lubridate::year(lubridate::mdy(date)), .aft
   mutate(month = lubridate::month(lubridate::mdy(date)), .after = year) %>%
   mutate(day = lubridate::day(lubridate::mdy(date)), .after = month) %>%
   mutate(day_of_week = lubridate::wday(lubridate::mdy(date), label = TRUE), .after = day) %>% 
-  mutate(week_of_year = lubridate::week(lubridate::mdy(date)), .after = day_of_week) %>% 
-  
+  mutate(week_of_year = lubridate::week(lubridate::mdy(date)), .after = day_of_week)
 
 # Build separate data frame to properly define the week of the season
 week_in_season <- nfl_elo %>%
