@@ -90,30 +90,30 @@ shinyUI(
                                                "Playoffs" = 'playoff'),
                                              selected = 'reg_season')
                         )
+                      )),
+             tabPanel("QBs All-Time",
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput('panel4_qb',
+                                      "Select QB of Interest",
+                                      choices = list_qb,
+                                      selected = 'Bart Starr'),
+                          h4("Teams Appeared For"),
+                          textOutput('panel4_teams'),
+                          h4("Career Record"),
+                          # textOutput(),
+                          h4("Career Elo Rating Range"),
+                          # plotOutput()
+                        ),
+                        mainPanel(
+                          # plotOutput(),
+                          checkboxGroupInput('panel4s_rsp',
+                                             "Choose Timeframe:",
+                                             choices = c("Regular Season" = 'reg_season',
+                                                         "Playoffs" = 'playoff'),
+                                             selected = 'reg_season')
+                        )
                       ))
-             # tabPanel("QBs All-Time",
-             #          sidebarLayout(
-             #            sidebarPanel(
-             #              selectInput('panel4_qb',
-             #                          "Select QB of Interest",
-             #                          choices = list_qb,
-             #                          selected = 'Bart Starr'),
-             #              h4("Career Record"),
-             #              # textOutput(),
-             #              h4("Teams Appeared For"),
-             #              # textOutput(),
-             #              h4("Career Elo Rating Range"),
-             #              # plotOutput()
-             #            ),
-             #            mainPanel(
-             #              # plotOutput(),
-             #              checkboxGroupInput('panel4s_rsp',
-             #                                 "Choose Timeframe:",
-             #                                 choices = c("Regular Season" = 'reg_season',
-             #                                             "Playoffs" = 'playoff'),
-             #                                 selected = 'reg_season')
-             #            )
-             #          ))
     
   )
 )
