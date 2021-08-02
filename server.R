@@ -621,7 +621,8 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # # Plot QB Performance Trend
+  # Plot QB Performance Lifetime
+  
   # output$panel2_qb_season <- renderPlotly({
   #   
   #   if (length(input$panel2_rsp) == 0) {
