@@ -41,7 +41,11 @@ shinyUI(
                           textOutput('panel1_record_lower'),
                         ),
                         mainPanel(
-                          # plotOutput(),
+                          plotlyOutput('panel1_team_trend', height = "500px"),
+                          radioButtons('panel1_elo_type',
+                                        label = "Select Base Elo Rating or QB-Adjusted Elo Rating",
+                                        choices = c("Base Elo" = 'elo',
+                                                    "QB-Adjusted Elo" = 'qbelo')),
                           checkboxGroupInput('panel1_rsp',
                                              "Choose Timeframe:",
                                              choices = c("Regular Season" = 'reg_season',
@@ -79,37 +83,37 @@ shinyUI(
                           textOutput('panel2_qb_record_lower')
                         ),
                         mainPanel(
-                          plotlyOutput('panel2_qb_season', height = "600px"),
+                          plotlyOutput('panel2_qb_season', height = "500px"),
                           checkboxGroupInput('panel2_rsp',
                                              "Choose Timeframe:",
                                              choices = c("Regular Season" = 'reg_season',
                                                "Playoffs" = 'playoff'),
                                              selected = 'reg_season')
                         )
-                      )),
-             tabPanel("QBs All-Time",
-                      sidebarLayout(
-                        sidebarPanel(
-                          selectInput('panel4_qb',
-                                      "Select QB of Interest",
-                                      choices = list_qb,
-                                      selected = 'Bart Starr'),
-                          h4("Career Record"),
-                          # textOutput(),
-                          h4("Teams Appeared For"),
-                          # textOutput(),
-                          h4("Career Elo Rating Range"),
-                          # plotOutput()
-                        ),
-                        mainPanel(
-                          # plotOutput(),
-                          checkboxGroupInput('panel4s_rsp',
-                                             "Choose Timeframe:",
-                                             choices = c("Regular Season" = 'reg_season',
-                                                         "Playoffs" = 'playoff'),
-                                             selected = 'reg_season')
-                        )
                       ))
+             # tabPanel("QBs All-Time",
+             #          sidebarLayout(
+             #            sidebarPanel(
+             #              selectInput('panel4_qb',
+             #                          "Select QB of Interest",
+             #                          choices = list_qb,
+             #                          selected = 'Bart Starr'),
+             #              h4("Career Record"),
+             #              # textOutput(),
+             #              h4("Teams Appeared For"),
+             #              # textOutput(),
+             #              h4("Career Elo Rating Range"),
+             #              # plotOutput()
+             #            ),
+             #            mainPanel(
+             #              # plotOutput(),
+             #              checkboxGroupInput('panel4s_rsp',
+             #                                 "Choose Timeframe:",
+             #                                 choices = c("Regular Season" = 'reg_season',
+             #                                             "Playoffs" = 'playoff'),
+             #                                 selected = 'reg_season')
+             #            )
+             #          ))
     
   )
 )

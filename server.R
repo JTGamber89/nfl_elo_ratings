@@ -50,6 +50,15 @@ shinyServer(function(input, output, session) {
     selected_team <- input$panel1_team
     playoffs <- input$panel1_rsp
     
+    if (input$panel1_elo_type == 'elo'){
+      stat <- 'elo_pre'
+      opp_stat <- 'opponent_elo_pre'
+    } else {
+      stat <- 'qbelo_pre'
+      opp_stat <- 'opposing_qbelo_pre'
+    }
+    
+    
     panel1_subset <- nfl_elo %>% filter(season == selected_season, team == selected_team)
     
     # Case: null set
@@ -76,12 +85,12 @@ shinyServer(function(input, output, session) {
         if (length(playoffs) == 2){
           
           record <- panel1_subset %>% count(result)
-          record_home <- panel1_subset %>%filter(home_away == 'Home') %>%  count(result)
-          record_away <- panel1_subset %>%filter(home_away == 'Away') %>%  count(result)
-          record_fav <- panel1_subset %>%filter(elo_pre > opponent_elo_pre) %>%  count(result)
-          record_dog <- panel1_subset %>%filter(elo_pre < opponent_elo_pre) %>%  count(result)
-          record_higher <- panel1_subset %>%filter(qb_value_pre > opposing_qb_value_pre) %>%  count(result)
-          record_lower <- panel1_subset %>%filter(qb_value_pre < opposing_qb_value_pre) %>%  count(result)
+          record_home <- panel1_subset %>% filter(home_away == 'Home') %>%  count(result)
+          record_away <- panel1_subset %>% filter(home_away == 'Away') %>%  count(result)
+          record_fav <- panel1_subset %>% filter(purrr::pluck(stat) > opposing_qbelo_pre) %>%  count(result)
+          record_dog <- panel1_subset %>% filter(purrr::pluck(stat) < opposing_qbelo_pre) %>%  count(result)
+          record_higher <- panel1_subset %>% filter(qb_value_pre > opposing_qb_value_pre) %>%  count(result)
+          record_lower <- panel1_subset %>% filter(qb_value_pre < opposing_qb_value_pre) %>%  count(result)
           
           # Case: Regular season only
         } else if (playoffs == 'reg_season'){
@@ -89,8 +98,8 @@ shinyServer(function(input, output, session) {
           record <- panel1_subset %>% filter(is.na(playoff)) %>% count(result)
           record_home <- panel1_subset %>% filter(is.na(playoff), home_away == 'Home') %>% count(result)
           record_away <- panel1_subset %>% filter(is.na(playoff), home_away == 'Away') %>% count(result)
-          record_fav <- panel1_subset %>% filter(is.na(playoff), elo_pre > opponent_elo_pre) %>% count(result)
-          record_dog <- panel1_subset %>% filter(is.na(playoff), elo_pre < opponent_elo_pre) %>% count(result)
+          record_fav <- panel1_subset %>% filter(is.na(playoff), purrr::pluck(stat) > opposing_qbelo_pre) %>% count(result)
+          record_dog <- panel1_subset %>% filter(is.na(playoff), purrr::pluck(stat) < opposing_qbelo_pre) %>% count(result)
           record_higher <- panel1_subset %>% filter(is.na(playoff), qb_value_pre > opposing_qb_value_pre) %>% count(result)
           record_lower <- panel1_subset %>% filter(is.na(playoff), qb_value_pre < opposing_qb_value_pre) %>% count(result)
           
@@ -100,8 +109,8 @@ shinyServer(function(input, output, session) {
           record <- panel1_subset %>% filter(!is.na(playoff)) %>% count(result)
           record_home <- panel1_subset %>% filter(!is.na(playoff), home_away == 'Home') %>% count(result)
           record_away <- panel1_subset %>% filter(!is.na(playoff), home_away == 'Away') %>% count(result)
-          record_fav <- panel1_subset %>% filter(!is.na(playoff), elo_pre > opponent_elo_pre) %>% count(result)
-          record_dog <- panel1_subset %>% filter(!is.na(playoff), elo_pre < opponent_elo_pre) %>% count(result)
+          record_fav <- panel1_subset %>% filter(!is.na(playoff), purrr::pluck(stat) > opposing_qbelo_pre) %>% count(result)
+          record_dog <- panel1_subset %>% filter(!is.na(playoff), purrr::pluck(stat) < opposing_qbelo_pre) %>% count(result)
           record_higher <- panel1_subset %>% filter(!is.na(playoff), qb_value_pre > opposing_qb_value_pre) %>% count(result)
           record_lower <- panel1_subset %>% filter(!is.na(playoff), qb_value_pre < opposing_qb_value_pre) %>% count(result)
         }
@@ -147,56 +156,107 @@ shinyServer(function(input, output, session) {
   })
   
   # Plot QB Performance Trend
-  output$panel2_qb_season <- renderPlot({
+  output$panel1_team_trend <- renderPlotly({
     
-    if (length(input$panel2_rsp) == 0) {
+    if (length(input$panel1_rsp) == 0) {
       ggplot() + theme_bw()
     } else {
       
-      if(length(input$panel2_rsp) == 2) {
-        panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb)
-        league_elo <- nfl_elo %>% filter(season == input$panel2_season)
-        xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', 'W', 'D', 'C', 'S')
+      if(length(input$panel1_rsp) == 2) {
+        panel1_data <- nfl_elo %>% filter(season == input$panel1_season, team == input$panel1_team) 
+        league_elo <- nfl_elo %>% filter(season == input$panel1_season)
       } 
-      else if (input$panel2_rsp == 'reg_season') {
-        panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, is.na(playoff))
-        league_elo <- nfl_elo %>% filter(season == input$panel2_season, is.na(playoff))
-        xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17')
+      else if (input$panel1_rsp == 'reg_season') {
+        panel1_data <- nfl_elo %>% filter(season == input$panel1_season, team == input$panel1_team, is.na(playoff))
+        league_elo <- nfl_elo %>% filter(season == input$panel1_season, is.na(playoff))
       }
-      else if (input$panel2_rsp == 'playoff') {
-        panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, !is.na(playoff))
-        league_elo <- nfl_elo %>% filter(season == input$panel2_season, !is.na(playoff))
-        xlabels = c('W', 'D', 'C', 'S')
+      else if (input$panel1_rsp == 'playoff') {
+        panel1_data <- nfl_elo %>% filter(season == input$panel1_season, team == input$panel1_team, !is.na(playoff))
+        league_elo <- nfl_elo %>% filter(season == input$panel1_season, !is.na(playoff))
       }
       
-      team_colors <- team_pal(panel2_data$team %>% unique())
+      # Set team colors for chosen team
+      team_colors <- team_pal(input$panel1_team)
       
-      if (nrow(panel2_data) == 0) {
-        ggplot() +
-          theme_bw()
+      # Set x-axis labels based on number of games in season
+      ###xaxis_labs <- panel1_data %>% select(playoff_week)
+      ###xaxis_vals <- seq(1, nrow(xaxis_labs) + 1)
+
+      # Case: No data available (probably because the team didn't make the playoffs)
+      if (nrow(panel1_data) == 0) {
+        fig <- plot_ly()
       } else {
         
-        static_plot <- ggplot(mapping = aes_string(x = as.factor(panel2_data$week_of_season))) +
-          geom_violin(mapping = aes_string(x = as.factor(league_elo$week_of_season), y = league_elo$qb_value_pre),
-                      alpha = 0.4, fill = 'grey', scale = 'width') +
-          geom_point(mapping = aes_string(y = panel2_data$qb_value_pre), color = team_colors[1], size = 4) +
-          geom_point(mapping = aes_string(y = panel2_data$qb_value_post), color = team_colors[2], size = 4) +
-          geom_segment(mapping = aes_string(y = panel2_data$qb_value_pre,
-                                            xend = as.factor(panel2_data$week_of_season), yend = panel2_data$qb_value_post),
-                       size = 0.8, arrow = arrow(length = unit(0.02, "npc"))) +
-          xlab('Week of the Season') +
-          scale_x_discrete(labels = xlabels) +
-          ylab('QB Elo Rating Before and After Each Game') +
-          theme_bw()
+        # ggplot(mapping = aes_string(x = as.factor(panel1_data$week_of_season))) +
+        #   geom_violin(mapping = aes_string(x = as.factor(league_elo$week_of_season), y = league_elo$elo_pre),
+        #               alpha = 0.4, fill = 'grey', scale = 'width') +
+        #   geom_point(mapping = aes_string(y = panel1_data$elo_pre), color = team_colors[1], size = 4) +
+        #   geom_point(mapping = aes_string(y = panel1_data$elo_post), color = team_colors[2], size = 4) +
+        #   geom_segment(mapping = aes_string(y = panel1_data$elo_pre,
+        #                                     xend = as.factor(panel1_data$week_of_season), yend = panel1_data$qb_value_post),
+        #                size = 0.8, arrow = arrow(length = unit(0.02, "npc"))) +
+        #   xlab('Week of the Season') +
+        #   scale_x_discrete(labels = xlabels) +
+        #   ylab('QB Elo Rating Before and After Each Game') +
+        #   theme_bw()
         
-        static_plot
+        fig <- panel1_data %>% plot_ly()
         
-        #QB_season_plot <- ggplotly(static_plot)
-        #QB_season_plot
+        fig <- fig %>%
+          add_trace(
+            type = 'violin',
+            x = ~ league_elo$week_of_season,
+            y = ~ league_elo$qbelo_pre,
+            split = ~ league_elo$week_of_season,
+            hoverinfo = 'none',
+            color = I('grey'),
+            showlegend = FALSE
+          )
+        
+        fig <- fig %>%
+          add_trace(
+            type = 'scatter',
+            mode = 'markers',
+            x = ~ week_of_season,
+            y = ~ qbelo_pre,
+            size = 5,
+            showlegend = FALSE,
+            fill = team_colors[1],
+            text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
+                           home_away, "vs", opponent, '<br>',
+                           "Pre-Game Team Elo Rating:", qbelo_pre, '<br>',
+                           "Pre-Game Opponent Elo Rating:", opposing_qbelo_pre, '<br>',
+                           "Win Probability: ", qbelo_prob)
+          )
+        
+        fig <- fig %>%
+          add_trace(
+            type = 'scatter',
+            mode = 'markers',
+            x = ~ week_of_season,
+            y = ~ qbelo_post,
+            size = 5,
+            showlegend = FALSE,
+            fill = team_colors[2],
+            text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
+                           home_away, "vs", opponent, '<br>',
+                           "Post-Game Team Elo Rating:", qbelo_post, '<br>',
+                           "Post-Game Opponent Elo Rating:", opposing_qbelo_post, '<br>',
+                           "Win Probability: ", qbelo_prob)
+          )
+        
+        fig <- fig %>% layout(
+          xaxis = list(title = 'Week of the Season'),
+          #              ticktext = list(xaxis_labs),
+          #              tickvals = list(xaxis_vals),
+          #              tickmode = "array"),
+          yaxis = list(title = 'Team Elo Ranking within League Distribution')
+        )
+        
+        fig
+        
       }
     }
-    
-    
     
   })
   
@@ -240,7 +300,7 @@ shinyServer(function(input, output, session) {
   
   })
   
-  # Observe settings for Panel 2 to drive record and plotting
+  # Observe settings for Panel 2 to drive record
   observe({
     selected_season <- input$panel2_season
     selected_qb <- input$panel2_qb
@@ -274,8 +334,8 @@ shinyServer(function(input, output, session) {
               record <- panel2_subset %>% count(result)
               record_home <- panel2_subset %>%filter(home_away == 'Home') %>%  count(result)
               record_away <- panel2_subset %>%filter(home_away == 'Away') %>%  count(result)
-              record_fav <- panel2_subset %>%filter(elo_pre > opponent_elo_pre) %>%  count(result)
-              record_dog <- panel2_subset %>%filter(elo_pre < opponent_elo_pre) %>%  count(result)
+              record_fav <- panel2_subset %>%filter(qbelo_pre > opposing_qbelo_pre) %>%  count(result)
+              record_dog <- panel2_subset %>%filter(qbelo_pre < opposing_qbelo_pre) %>%  count(result)
               record_higher <- panel2_subset %>%filter(qb_value_pre > opposing_qb_value_pre) %>%  count(result)
               record_lower <- panel2_subset %>%filter(qb_value_pre < opposing_qb_value_pre) %>%  count(result)
               
@@ -285,8 +345,8 @@ shinyServer(function(input, output, session) {
               record <- panel2_subset %>% filter(is.na(playoff)) %>% count(result)
               record_home <- panel2_subset %>% filter(is.na(playoff), home_away == 'Home') %>% count(result)
               record_away <- panel2_subset %>% filter(is.na(playoff), home_away == 'Away') %>% count(result)
-              record_fav <- panel2_subset %>% filter(is.na(playoff), elo_pre > opponent_elo_pre) %>% count(result)
-              record_dog <- panel2_subset %>% filter(is.na(playoff), elo_pre < opponent_elo_pre) %>% count(result)
+              record_fav <- panel2_subset %>% filter(is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
+              record_dog <- panel2_subset %>% filter(is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
               record_higher <- panel2_subset %>% filter(is.na(playoff), qb_value_pre > opposing_qb_value_pre) %>% count(result)
               record_lower <- panel2_subset %>% filter(is.na(playoff), qb_value_pre < opposing_qb_value_pre) %>% count(result)
               
@@ -296,8 +356,8 @@ shinyServer(function(input, output, session) {
               record <- panel2_subset %>% filter(!is.na(playoff)) %>% count(result)
               record_home <- panel2_subset %>% filter(!is.na(playoff), home_away == 'Home') %>% count(result)
               record_away <- panel2_subset %>% filter(!is.na(playoff), home_away == 'Away') %>% count(result)
-              record_fav <- panel2_subset %>% filter(!is.na(playoff), elo_pre > opponent_elo_pre) %>% count(result)
-              record_dog <- panel2_subset %>% filter(!is.na(playoff), elo_pre < opponent_elo_pre) %>% count(result)
+              record_fav <- panel2_subset %>% filter(!is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
+              record_dog <- panel2_subset %>% filter(!is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
               record_higher <- panel2_subset %>% filter(!is.na(playoff), qb_value_pre > opposing_qb_value_pre) %>% count(result)
               record_lower <- panel2_subset %>% filter(!is.na(playoff), qb_value_pre < opposing_qb_value_pre) %>% count(result)
             }
@@ -372,7 +432,7 @@ shinyServer(function(input, output, session) {
           theme_bw()
       } else {
         
-        # static_plot <- ggplot(mapping = aes_string(x = as.factor(panel2_data$week_of_season))) +
+        # ggplot(mapping = aes_string(x = as.factor(panel2_data$week_of_season))) +
         #   geom_violin(mapping = aes_string(x = as.factor(league_elo$week_of_season), y = league_elo$qb_value_pre),
         #               alpha = 0.4, fill = 'grey', scale = 'width') +
         #   geom_point(mapping = aes_string(y = panel2_data$qb_value_pre), color = team_colors[1], size = 4) +
@@ -413,7 +473,7 @@ shinyServer(function(input, output, session) {
                            "Pre-Game Team Elo Rating:", elo_pre, '<br>',
                            "Win Probability: ", elo_prob)
           )
-        
+
         fig <- fig %>%
           add_trace(
             type = 'scatter',
@@ -429,18 +489,14 @@ shinyServer(function(input, output, session) {
                            "Post-Game Team Elo Rating:", elo_post, '<br>',
                            "Win Probability: ", elo_prob)
           )
+
         fig <- fig %>% layout(
           xaxis = list(title = 'Week of the Season'),
           yaxis = list(title = 'QB Elo within League Distribution')
         )
-          
-        
-        
 
         fig
         
-        #QB_season_plot <- ggplotly(static_plot)
-        #QB_season_plot
         }
       }
     

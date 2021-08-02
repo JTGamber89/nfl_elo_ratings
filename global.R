@@ -120,6 +120,10 @@ nfl_elo_away <- nfl_elo %>%
 nfl_elo <- rbind(nfl_elo_home, nfl_elo_away) %>% 
   arrange(season, year, month, day, game_of_day_id)
 
+# Set up playoff_week column to combine week_of_season and playoff
+nfl_elo <- nfl_elo %>%
+  mutate(playoff_week = ifelse(is.na(playoff), week_of_season, playoff), .after = week_of_season)
+
 ## Re-Define the team names in the data set as the full team name rather than the abbreviation
 nfl_elo$team[nfl_elo$team == "ARI"] <- "Arizona Cardinals"
 nfl_elo$team[nfl_elo$team == "ATL"] <- "Atlanta Falcons"
