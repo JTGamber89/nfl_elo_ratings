@@ -178,9 +178,25 @@ shinyServer(function(input, output, session) {
       # Set team colors for chosen team
       team_colors <- team_pal(input$panel1_team)
       
-      # Set x-axis labels based on number of games in season
-      ###xaxis_labs <- panel1_data %>% select(playoff_week)
-      ###xaxis_vals <- seq(1, nrow(xaxis_labs) + 1)
+      if (input$panel1_elo_type == 'elo'){
+        panel1_plot_data <- panel1_data %>% mutate(plot_var_pre = elo_pre,
+                               plot_var_post = elo_post,
+                               plot_var_opp_pre = opponent_elo_pre,
+                               plot_var_opp_post = opponent_elo_post,
+                               plot_prob = elo_prob)
+        
+        league_elo_plot <- league_elo %>% mutate(plot_var_league = elo_pre)
+          
+      } else if (input$panel1_elo_type == 'qbelo'){
+        panel1_plot_data <- panel1_data %>% mutate(plot_var_pre = qbelo_pre,
+                               plot_var_post = qbelo_post,
+                               plot_var_opp_pre = opposing_qbelo_pre,
+                               plot_var_opp_post = opposing_qbelo_post,
+                               plot_prob = qbelo_prob)
+        
+        league_elo_plot <- league_elo %>% mutate(plot_var_league = qbelo_pre)
+      }
+      
 
       # Case: No data available (probably because the team didn't make the playoffs)
       if (nrow(panel1_data) == 0) {
@@ -200,14 +216,14 @@ shinyServer(function(input, output, session) {
         #   ylab('QB Elo Rating Before and After Each Game') +
         #   theme_bw()
         
-        fig <- panel1_data %>% plot_ly()
+        fig <- panel1_plot_data %>% plot_ly()
         
         fig <- fig %>%
           add_trace(
             type = 'violin',
-            x = ~ league_elo$week_of_season,
-            y = ~ league_elo$qbelo_pre,
-            split = ~ league_elo$week_of_season,
+            x = ~ league_elo_plot$week_of_season,
+            y = ~ league_elo_plot$plot_var_league,
+            split = ~ league_elo_plot$week_of_season,
             hoverinfo = 'none',
             color = I('grey'),
             showlegend = FALSE
@@ -218,15 +234,16 @@ shinyServer(function(input, output, session) {
             type = 'scatter',
             mode = 'markers',
             x = ~ week_of_season,
-            y = ~ qbelo_pre,
+            y = ~ plot_var_pre,
             size = 5,
             showlegend = FALSE,
             fill = team_colors[1],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
-                           "Pre-Game Team Elo Rating:", qbelo_pre, '<br>',
-                           "Pre-Game Opponent Elo Rating:", opposing_qbelo_pre, '<br>',
-                           "Win Probability: ", qbelo_prob)
+                           "QB:", qb, '<br>',
+                           "Pre-Game Team Elo Rating:", plot_var_pre, '<br>',
+                           "Pre-Game Opponent Elo Rating:", plot_var_opp_pre, '<br>',
+                           "Win Probability: ", plot_prob)
           )
         
         fig <- fig %>%
@@ -234,22 +251,20 @@ shinyServer(function(input, output, session) {
             type = 'scatter',
             mode = 'markers',
             x = ~ week_of_season,
-            y = ~ qbelo_post,
+            y = ~ plot_var_post,
             size = 5,
             showlegend = FALSE,
             fill = team_colors[2],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
-                           "Post-Game Team Elo Rating:", qbelo_post, '<br>',
-                           "Post-Game Opponent Elo Rating:", opposing_qbelo_post, '<br>',
-                           "Win Probability: ", qbelo_prob)
+                           "QB:", qb, '<br>',
+                           "Post-Game Team Elo Rating:", plot_var_post, '<br>',
+                           "Post-Game Opponent Elo Rating:", plot_var_opp_post, '<br>',
+                           "Win Probability: ", plot_prob)
           )
         
         fig <- fig %>% layout(
           xaxis = list(title = 'Week of the Season'),
-          #              ticktext = list(xaxis_labs),
-          #              tickvals = list(xaxis_vals),
-          #              tickmode = "array"),
           yaxis = list(title = 'Team Elo Ranking within League Distribution')
         )
         
@@ -459,15 +474,15 @@ shinyServer(function(input, output, session) {
             type = 'scatter',
             mode = 'markers',
             x = ~ week_of_season,
-            y = ~ panel2_data$qb_value_pre,
+            y = ~ qb_value_pre,
             size = 5,
             showlegend = FALSE,
             fill = team_colors[1],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
                            "Pre-Game QB Elo Rating:", qb_value_pre, '<br>',
-                           "Pre-Game Team Elo Rating:", elo_pre, '<br>',
-                           "Win Probability: ", elo_prob)
+                           "Pre-Game Team Elo Rating:", qbelo_pre, '<br>',
+                           "Win Probability: ", qbelo_prob)
           )
 
         fig <- fig %>%
@@ -475,15 +490,15 @@ shinyServer(function(input, output, session) {
             type = 'scatter',
             mode = 'markers',
             x = ~ week_of_season,
-            y = ~ panel2_data$qb_value_post,
+            y = ~ qb_value_post,
             size = 5,
             showlegend = FALSE,
             fill = team_colors[2],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
                            "Post-Game QB Elo Rating:", qb_value_post, '<br>',
-                           "Post-Game Team Elo Rating:", elo_post, '<br>',
-                           "Win Probability: ", elo_prob)
+                           "Post-Game Team Elo Rating:", qbelo_post, '<br>',
+                           "Win Probability: ", qbelo_prob)
           )
 
         fig <- fig %>% layout(
@@ -544,6 +559,12 @@ shinyServer(function(input, output, session) {
       # Case: Player did not make playoffs and playoffs are selected
       if (length(playoffs) == 1 & playoffs == 'playoff' & plyr::empty(panel4_subset %>% filter(!is.na(playoff)))){
         output$panel4_record <- renderText({ sprintf("Never qualified for postseason") })
+        output$panel4_record_home <- renderText({ sprintf("0-0-0") })
+        output$panel4_record_away <- renderText({ sprintf("0-0-0") })
+        output$panel4_record_fav <- renderText({ sprintf("0-0-0") })
+        output$panel4_record_dog <- renderText({ sprintf("0-0-0") })
+        output$panel4_record_higher <- renderText({ sprintf("0-0-0") })
+        output$panel4_record_lower <- renderText({ sprintf("0-0-0") })
         
       } else {
         
@@ -620,6 +641,21 @@ shinyServer(function(input, output, session) {
       }
     }
   })
+  
+  # Output sidebar plot of QB Elo ratings hist within all-time range
+  output$panel4_qb_career_elo <- renderPlot({
+    
+    # Select Team colors for plotting
+    team_tibble <- nfl_elo %>% filter(qb == input$panel4_qb) %>% select(team) %>% group_by(team) %>% count() %>% arrange(desc(n))
+    qb_team_colors <- team_pal(team_tibble$team[1])
+    
+    # Plot histogram of qb_value_post
+    nfl_elo %>% filter(qb == input$panel4_qb) %>% ggplot() + 
+      geom_histogram(mapping = aes(x = qb_value_post), bins = 31, fill = qb_team_colors[1], color = qb_team_colors[2]) +
+      xlim(min(nfl_elo$qb_value_post), max(nfl_elo$qb_value_post)) +
+      xlab('Player Elo Rating within All-time Range')
+      theme_bw()
+    })
   
   # Plot QB Performance Lifetime
   

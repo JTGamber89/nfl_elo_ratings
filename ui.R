@@ -50,7 +50,8 @@ shinyUI(
                                              "Choose Timeframe:",
                                              choices = c("Regular Season" = 'reg_season',
                                                          "Playoffs" = 'playoff'),
-                                             selected = 'reg_season')
+                                             selected = 'reg_season'),
+                          includeMarkdown('panel1_description.md')
                         )
                       )),
              tabPanel("QBs by Season",
@@ -93,7 +94,7 @@ shinyUI(
                       )),
              tabPanel("QBs All-Time",
                       sidebarLayout(
-                        sidebarPanel(
+                        sidebarPanel(width = 5,
                           selectInput('panel4_qb',
                                       "Select QB of Interest",
                                       choices = list_qb,
@@ -116,7 +117,7 @@ shinyUI(
                           h4("As Lower Rated QB:"),
                           textOutput('panel4_record_lower'),
                           h4("Career Elo Rating Range"),
-                          # plotOutput()
+                          plotOutput('panel4_qb_career_elo')
                         ),
                         mainPanel(
                           # plotOutput(),
