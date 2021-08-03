@@ -94,7 +94,7 @@ shinyUI(
                       )),
              tabPanel("QBs All-Time",
                       sidebarLayout(
-                        sidebarPanel(width = 5,
+                        sidebarPanel(
                           selectInput('panel4_qb',
                                       "Select QB of Interest",
                                       choices = list_qb,
@@ -117,10 +117,10 @@ shinyUI(
                           h4("As Lower Rated QB:"),
                           textOutput('panel4_record_lower'),
                           h4("Career Elo Rating Range"),
-                          plotOutput('panel4_qb_career_elo')
+                          plotOutput('panel4_qb_elo_mini')
                         ),
                         mainPanel(
-                          # plotOutput(),
+                          plotlyOutput('panel4_qb_career'),
                           checkboxGroupInput('panel4_rsp',
                                              "Choose Timeframe:",
                                              choices = c("Regular Season" = 'reg_season',

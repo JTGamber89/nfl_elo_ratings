@@ -422,17 +422,17 @@ shinyServer(function(input, output, session) {
       
       if(length(input$panel2_rsp) == 2) {
         panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb)
-        league_elo <- nfl_elo %>% filter(season == input$panel2_season)
+        panel2_league <- nfl_elo %>% filter(season == input$panel2_season)
         xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', 'W', 'D', 'C', 'S')
       } 
       else if (input$panel2_rsp == 'reg_season') {
         panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, is.na(playoff))
-        league_elo <- nfl_elo %>% filter(season == input$panel2_season, is.na(playoff))
+        panel2_league <- nfl_elo %>% filter(season == input$panel2_season, is.na(playoff))
         xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17')
       }
       else if (input$panel2_rsp == 'playoff') {
         panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, !is.na(playoff))
-        league_elo <- nfl_elo %>% filter(season == input$panel2_season, !is.na(playoff))
+        panel2_league <- nfl_elo %>% filter(season == input$panel2_season, !is.na(playoff))
         xlabels = c('W', 'D', 'C', 'S')
       }
       
@@ -461,9 +461,9 @@ shinyServer(function(input, output, session) {
         fig <- fig %>%
           add_trace(
             type = 'violin',
-            x = ~ league_elo$week_of_season,
-            y = ~ league_elo$qb_value_pre,
-            split = ~ league_elo$week_of_season,
+            x = ~ panel2_league$week_of_season,
+            y = ~ panel2_league$qb_value_pre,
+            split = ~ panel2_league$week_of_season,
             hoverinfo = 'none',
             color = I('grey'),
             showlegend = FALSE
@@ -643,7 +643,7 @@ shinyServer(function(input, output, session) {
   })
   
   # Output sidebar plot of QB Elo ratings hist within all-time range
-  output$panel4_qb_career_elo <- renderPlot({
+  output$panel4_qb_elo_mini <- renderPlot({
     
     # Select Team colors for plotting
     team_tibble <- nfl_elo %>% filter(qb == input$panel4_qb) %>% select(team) %>% group_by(team) %>% count() %>% arrange(desc(n))
@@ -653,111 +653,108 @@ shinyServer(function(input, output, session) {
     nfl_elo %>% filter(qb == input$panel4_qb) %>% ggplot() + 
       geom_histogram(mapping = aes(x = qb_value_post), bins = 31, fill = qb_team_colors[1], color = qb_team_colors[2]) +
       xlim(min(nfl_elo$qb_value_post), max(nfl_elo$qb_value_post)) +
-      xlab('Player Elo Rating within All-time Range')
+      xlab('Player Elo Rating within All-time Range') +
       theme_bw()
     })
   
   # Plot QB Performance Lifetime
   
-  # output$panel2_qb_season <- renderPlotly({
-  #   
-  #   if (length(input$panel2_rsp) == 0) {
-  #     ggplot() + theme_bw()
-  #   } else {
-  #     
-  #     if(length(input$panel2_rsp) == 2) {
-  #       panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb)
-  #       league_elo <- nfl_elo %>% filter(season == input$panel2_season)
-  #       xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', 'W', 'D', 'C', 'S')
-  #     } 
-  #     else if (input$panel2_rsp == 'reg_season') {
-  #       panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, is.na(playoff))
-  #       league_elo <- nfl_elo %>% filter(season == input$panel2_season, is.na(playoff))
-  #       xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17')
-  #     }
-  #     else if (input$panel2_rsp == 'playoff') {
-  #       panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, !is.na(playoff))
-  #       league_elo <- nfl_elo %>% filter(season == input$panel2_season, !is.na(playoff))
-  #       xlabels = c('W', 'D', 'C', 'S')
-  #     }
-  #     
-  #     team_colors <- team_pal(panel2_data$team %>% unique())
-  #     
-  #     if (nrow(panel2_data) == 0) {
-  #       ggplot() +
-  #         theme_bw()
-  #     } else {
-  #       
-  #       # ggplot(mapping = aes_string(x = as.factor(panel2_data$week_of_season))) +
-  #       #   geom_violin(mapping = aes_string(x = as.factor(league_elo$week_of_season), y = league_elo$qb_value_pre),
-  #       #               alpha = 0.4, fill = 'grey', scale = 'width') +
-  #       #   geom_point(mapping = aes_string(y = panel2_data$qb_value_pre), color = team_colors[1], size = 4) +
-  #       #   geom_point(mapping = aes_string(y = panel2_data$qb_value_post), color = team_colors[2], size = 4) +
-  #       #   geom_segment(mapping = aes_string(y = panel2_data$qb_value_pre,
-  #       #                                     xend = as.factor(panel2_data$week_of_season), yend = panel2_data$qb_value_post),
-  #       #                size = 0.8, arrow = arrow(length = unit(0.02, "npc"))) +
-  #       #   xlab('Week of the Season') +
-  #       #   scale_x_discrete(labels = xlabels) +
-  #       #   ylab('QB Elo Rating Before and After Each Game') +
-  #       #   theme_bw()
-  #       
-  #       fig <- panel2_data %>% plot_ly()
-  #       
-  #       fig <- fig %>%
-  #         add_trace(
-  #           type = 'violin',
-  #           x = ~ league_elo$week_of_season,
-  #           y = ~ league_elo$qb_value_pre,
-  #           split = ~ league_elo$week_of_season,
-  #           hoverinfo = 'none',
-  #           color = I('grey'),
-  #           showlegend = FALSE
-  #         )
-  #       
-  #       fig <- fig %>%
-  #         add_trace(
-  #           type = 'scatter',
-  #           mode = 'markers',
-  #           x = ~ week_of_season,
-  #           y = ~ panel2_data$qb_value_pre,
-  #           size = 5,
-  #           showlegend = FALSE,
-  #           fill = team_colors[1],
-  #           text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
-  #                          home_away, "vs", opponent, '<br>',
-  #                          "Pre-Game QB Elo Rating:", qb_value_pre, '<br>',
-  #                          "Pre-Game Team Elo Rating:", elo_pre, '<br>',
-  #                          "Win Probability: ", elo_prob)
-  #         )
-  #       
-  #       fig <- fig %>%
-  #         add_trace(
-  #           type = 'scatter',
-  #           mode = 'markers',
-  #           x = ~ week_of_season,
-  #           y = ~ panel2_data$qb_value_post,
-  #           size = 5,
-  #           showlegend = FALSE,
-  #           fill = team_colors[2],
-  #           text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
-  #                          home_away, "vs", opponent, '<br>',
-  #                          "Post-Game QB Elo Rating:", qb_value_post, '<br>',
-  #                          "Post-Game Team Elo Rating:", elo_post, '<br>',
-  #                          "Win Probability: ", elo_prob)
-  #         )
-  #       
-  #       fig <- fig %>% layout(
-  #         xaxis = list(title = 'Week of the Season'),
-  #         yaxis = list(title = 'QB Elo within League Distribution')
-  #       )
-  #       
-  #       fig
-  #       
-  #     }
-  #   }
-  #   
-  #   
-  #   
-  # })
+  output$panel4_qb_career <- renderPlotly({
+
+    # Case: neither re season nor playoff selected, show nothing
+    if (length(input$panel4_rsp) == 0) {
+      ggplot() + theme_bw()
+    } else {
+
+      # Case: don't filter (use reg season and playoff)
+      if(length(input$panel4_rsp) == 2) {
+        panel4_data <- nfl_elo %>%
+          filter(qb == input$panel4_qb) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+
+        panel4_league <- nfl_elo %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+      }
+      # Case: filter for reg season data
+      else if (input$panel4_rsp == 'reg_season') {
+        panel4_data <- nfl_elo %>%
+          filter(qb == input$panel4_qb, is.na(playoff)) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+
+        panel4_league <- nfl_elo %>% filter(is.na(playoff)) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+      }
+      # Case: filter for playoff data
+      else if (input$panel4_rsp == 'playoff') {
+        panel4_data <- nfl_elo %>%
+          filter(qb == input$panel4_qb, !is.na(playoff)) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+
+        panel4_league <- nfl_elo %>% filter(!is.na(playoff)) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+      }
+
+
+      ### Placeholder for additional mutate based on radio button input
+
+
+      # Select QB's most-played-for-team's colors
+      team_tibble <- nfl_elo %>% filter(qb == input$panel4_qb) %>% select(team) %>% group_by(team) %>% count() %>% arrange(desc(n))
+      qb_team_colors <- team_pal(team_tibble$team[1])
+
+      # Case: QB never made the payoffs so the dataframe is empty (0 rows)
+      if (nrow(panel4_data) == 0) {
+        ggplot() +
+          theme_bw()
+      } else {
+
+        # Print figure with plotly
+        fig4 <- panel4_data %>% plot_ly()
+
+        fig4 <- fig4 %>%
+          add_trace(
+            type = 'scatter',
+            mode = 'lines+markers',
+            x = ~ date,
+            y = ~ qb_value_pre,
+            size = 5,
+            showlegend = FALSE,
+            fill = qb_team_colors[1],
+            text = ~ paste("<b>", season, "Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
+                           home_away, "vs", opponent, '<br>',
+                           "Pre-Game QB Elo Rating:", qb_value_pre, '<br>',
+                           "Pre-Game Team Elo Rating:", elo_pre, '<br>',
+                           "Win Probability: ", elo_prob)
+          )
+
+        # fig <- fig %>%
+        #   add_trace(
+        #     type = 'scatter',
+        #     mode = 'markers',
+        #     x = ~ week_of_season,
+        #     y = ~ panel2_data$qb_value_post,
+        #     size = 5,
+        #     showlegend = FALSE,
+        #     fill = team_colors[2],
+        #     text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
+        #                    home_away, "vs", opponent, '<br>',
+        #                    "Post-Game QB Elo Rating:", qb_value_post, '<br>',
+        #                    "Post-Game Team Elo Rating:", elo_post, '<br>',
+        #                    "Win Probability: ", elo_prob)
+        #   )
+        # 
+        # fig <- fig %>% layout(
+        #   xaxis = list(title = 'Week of the Season'),
+        #   yaxis = list(title = 'QB Elo within League Distribution')
+        # )
+
+        fig4
+
+      }
+    }
+
+
+
+  })
   
 })
