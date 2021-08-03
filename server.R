@@ -44,7 +44,7 @@ shinyServer(function(input, output, session) {
       })
   })
   
-  # Observe settings for Panel 2 to drive record and plotting
+  # Observe settings for Panel 1 to drive record and plotting
   observe({
     selected_season <- input$panel1_season
     selected_team <- input$panel1_team
@@ -175,8 +175,6 @@ shinyServer(function(input, output, session) {
         league_elo <- nfl_elo %>% filter(season == input$panel1_season, !is.na(playoff))
       }
       
-      # Set team colors for chosen team
-      team_colors <- team_pal(input$panel1_team)
       
       if (input$panel1_elo_type == 'elo'){
         panel1_plot_data <- panel1_data %>% mutate(plot_var_pre = elo_pre,
@@ -203,18 +201,9 @@ shinyServer(function(input, output, session) {
         fig <- plot_ly()
       } else {
         
-        # ggplot(mapping = aes_string(x = as.factor(panel1_data$week_of_season))) +
-        #   geom_violin(mapping = aes_string(x = as.factor(league_elo$week_of_season), y = league_elo$elo_pre),
-        #               alpha = 0.4, fill = 'grey', scale = 'width') +
-        #   geom_point(mapping = aes_string(y = panel1_data$elo_pre), color = team_colors[1], size = 4) +
-        #   geom_point(mapping = aes_string(y = panel1_data$elo_post), color = team_colors[2], size = 4) +
-        #   geom_segment(mapping = aes_string(y = panel1_data$elo_pre,
-        #                                     xend = as.factor(panel1_data$week_of_season), yend = panel1_data$qb_value_post),
-        #                size = 0.8, arrow = arrow(length = unit(0.02, "npc"))) +
-        #   xlab('Week of the Season') +
-        #   scale_x_discrete(labels = xlabels) +
-        #   ylab('QB Elo Rating Before and After Each Game') +
-        #   theme_bw()
+        # Set team colors for chosen team
+        team_palette <- team_pal(input$panel1_team)
+        team_colors <- c(team_palette[1], team_palette[2], "#FFFFFF")
         
         fig <- panel1_plot_data %>% plot_ly()
         
@@ -235,9 +224,13 @@ shinyServer(function(input, output, session) {
             mode = 'markers',
             x = ~ week_of_season,
             y = ~ plot_var_pre,
+            color = ~ qb,
+            marker = list(color = rep(team_colors[1],nrow(panel1_plot_data)),
+                          size = 14,
+                          opacity = 0.6,
+                          line = list(width = 2)),
             size = 5,
             showlegend = FALSE,
-            fill = team_colors[1],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
                            "QB:", qb, '<br>',
@@ -252,9 +245,13 @@ shinyServer(function(input, output, session) {
             mode = 'markers',
             x = ~ week_of_season,
             y = ~ plot_var_post,
+            color = ~ qb,
+            marker = list(color = rep(team_colors[2],nrow(panel1_plot_data)),
+                          size = 14,
+                          opacity = 0.6,
+                          line = list(width = 2)),
             size = 5,
             showlegend = FALSE,
-            fill = team_colors[2],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
                            "QB:", qb, '<br>',
@@ -264,7 +261,7 @@ shinyServer(function(input, output, session) {
           )
         
         fig <- fig %>% layout(
-          xaxis = list(title = 'Week of the Season'),
+          xaxis = list(title = 'Week of the Season', tickmode = 'linear'),
           yaxis = list(title = 'Team Elo Ranking within League Distribution')
         )
         
@@ -423,17 +420,14 @@ shinyServer(function(input, output, session) {
       if(length(input$panel2_rsp) == 2) {
         panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb)
         panel2_league <- nfl_elo %>% filter(season == input$panel2_season)
-        xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', 'W', 'D', 'C', 'S')
       } 
       else if (input$panel2_rsp == 'reg_season') {
         panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, is.na(playoff))
         panel2_league <- nfl_elo %>% filter(season == input$panel2_season, is.na(playoff))
-        xlabels = c('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17')
       }
       else if (input$panel2_rsp == 'playoff') {
         panel2_data <- nfl_elo %>% filter(season == input$panel2_season, qb == input$panel2_qb, !is.na(playoff))
         panel2_league <- nfl_elo %>% filter(season == input$panel2_season, !is.na(playoff))
-        xlabels = c('W', 'D', 'C', 'S')
       }
       
       team_colors <- team_pal(panel2_data$team %>% unique())
@@ -442,19 +436,6 @@ shinyServer(function(input, output, session) {
         ggplot() +
           theme_bw()
       } else {
-        
-        # ggplot(mapping = aes_string(x = as.factor(panel2_data$week_of_season))) +
-        #   geom_violin(mapping = aes_string(x = as.factor(league_elo$week_of_season), y = league_elo$qb_value_pre),
-        #               alpha = 0.4, fill = 'grey', scale = 'width') +
-        #   geom_point(mapping = aes_string(y = panel2_data$qb_value_pre), color = team_colors[1], size = 4) +
-        #   geom_point(mapping = aes_string(y = panel2_data$qb_value_post), color = team_colors[2], size = 4) +
-        #   geom_segment(mapping = aes_string(y = panel2_data$qb_value_pre,
-        #                                     xend = as.factor(panel2_data$week_of_season), yend = panel2_data$qb_value_post),
-        #                size = 0.8, arrow = arrow(length = unit(0.02, "npc"))) +
-        #   xlab('Week of the Season') +
-        #   scale_x_discrete(labels = xlabels) +
-        #   ylab('QB Elo Rating Before and After Each Game') +
-        #   theme_bw()
         
         fig <- panel2_data %>% plot_ly()
 
@@ -475,7 +456,11 @@ shinyServer(function(input, output, session) {
             mode = 'markers',
             x = ~ week_of_season,
             y = ~ qb_value_pre,
-            size = 5,
+            color = ~ qb,
+            marker = list(color = rep(team_colors[1],nrow(panel2_data)),
+                          size = 14,
+                          opacity = 0.6,
+                          line = list(width = 2)),
             showlegend = FALSE,
             fill = team_colors[1],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
@@ -491,7 +476,11 @@ shinyServer(function(input, output, session) {
             mode = 'markers',
             x = ~ week_of_season,
             y = ~ qb_value_post,
-            size = 5,
+            color = ~ qb,
+            marker = list(color = rep(team_colors[2],nrow(panel2_data)),
+                          size = 14,
+                          opacity = 0.6,
+                          line = list(width = 2)),
             showlegend = FALSE,
             fill = team_colors[2],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
@@ -701,6 +690,10 @@ shinyServer(function(input, output, session) {
       # Select QB's most-played-for-team's colors
       team_tibble <- nfl_elo %>% filter(qb == input$panel4_qb) %>% select(team) %>% group_by(team) %>% count() %>% arrange(desc(n))
       qb_team_colors <- team_pal(team_tibble$team[1])
+      
+      # In an even more convoluted scheme, select the colors for the team he played for in each game
+      all_team_colors <- purrr::map(panel2_data$team, team_pal, 1) %>% as.vector() %>% t() %>% t()
+      panel4_data <- panel4_data %>% mutate(colors = all_team_colors)
 
       # Case: QB never made the payoffs so the dataframe is empty (0 rows)
       if (nrow(panel4_data) == 0) {
@@ -717,8 +710,11 @@ shinyServer(function(input, output, session) {
             mode = 'lines+markers',
             x = ~ date,
             y = ~ qb_value_pre,
-            size = 5,
-            showlegend = FALSE,
+            color = ~ team,
+            marker = list(color = rep(team_colors[1],nrow(panel2_data)),
+                          size = 14,
+                          opacity = 0.6,
+                          line = list(width = 2)),            showlegend = FALSE,
             fill = qb_team_colors[1],
             text = ~ paste("<b>", season, "Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
