@@ -205,9 +205,9 @@ shinyServer(function(input, output, session) {
         team_palette <- team_pal(input$panel1_team)
         team_colors <- c(team_palette[1], team_palette[2], "#FFFFFF")
         
-        fig <- panel1_plot_data %>% plot_ly()
+        fig1 <- panel1_plot_data %>% plot_ly()
         
-        fig <- fig %>%
+        fig1 <- fig1 %>%
           add_trace(
             type = 'violin',
             x = ~ league_elo_plot$week_of_season,
@@ -218,7 +218,7 @@ shinyServer(function(input, output, session) {
             showlegend = FALSE
           )
         
-        fig <- fig %>%
+        fig1 <- fig1 %>%
           add_trace(
             type = 'scatter',
             mode = 'markers',
@@ -239,7 +239,7 @@ shinyServer(function(input, output, session) {
                            "Win Probability: ", plot_prob)
           )
         
-        fig <- fig %>%
+        fig1 <- fig1 %>%
           add_trace(
             type = 'scatter',
             mode = 'markers',
@@ -260,12 +260,12 @@ shinyServer(function(input, output, session) {
                            "Win Probability: ", plot_prob)
           )
         
-        fig <- fig %>% layout(
+        fig1 <- fig1 %>% layout(
           xaxis = list(title = 'Week of the Season', tickmode = 'linear'),
           yaxis = list(title = 'Team Elo Ranking within League Distribution')
         )
         
-        fig
+        fig1
         
       }
     }
@@ -432,14 +432,20 @@ shinyServer(function(input, output, session) {
       
       team_colors <- team_pal(panel2_data$team %>% unique())
       
+      # Select the colors for the team played for in each game
+      all_team_colors_1 <- purrr::map(panel2_data$team, team_pal, 1) %>% as.vector() %>% t() %>% t()
+      all_team_colors_2 <- purrr::map(panel2_data$team, team_pal, 2) %>% as.vector() %>% t() %>% t()
+      
+      panel2_data <- panel2_data %>% mutate(color1 = all_team_colors_1, color2 = all_team_colors_2)
+      
       if (nrow(panel2_data) == 0) {
         ggplot() +
           theme_bw()
       } else {
         
-        fig <- panel2_data %>% plot_ly()
+        fig2 <- panel2_data %>% plot_ly()
 
-        fig <- fig %>%
+        fig2 <- fig2 %>%
           add_trace(
             type = 'violin',
             x = ~ panel2_league$week_of_season,
@@ -450,17 +456,18 @@ shinyServer(function(input, output, session) {
             showlegend = FALSE
           )
 
-        fig <- fig %>%
+        fig2 <- fig2 %>%
           add_trace(
             type = 'scatter',
             mode = 'markers',
             x = ~ week_of_season,
             y = ~ qb_value_pre,
             color = ~ qb,
-            marker = list(color = rep(team_colors[1],nrow(panel2_data)),
+            marker = list(color = panel2_data$color1,
                           size = 14,
                           opacity = 0.6,
-                          line = list(width = 2)),
+                          line = list(width = 2,
+                                      color = panel2_data$color2)),
             showlegend = FALSE,
             fill = team_colors[1],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
@@ -470,17 +477,18 @@ shinyServer(function(input, output, session) {
                            "Win Probability: ", qbelo_prob)
           )
 
-        fig <- fig %>%
+        fig2 <- fig2 %>%
           add_trace(
             type = 'scatter',
             mode = 'markers',
             x = ~ week_of_season,
             y = ~ qb_value_post,
             color = ~ qb,
-            marker = list(color = rep(team_colors[2],nrow(panel2_data)),
+            marker = list(color = panel2_data$color2,
                           size = 14,
                           opacity = 0.6,
-                          line = list(width = 2)),
+                          line = list(width = 2,
+                                      color = panel2_data$color1)),
             showlegend = FALSE,
             fill = team_colors[2],
             text = ~ paste("<b> Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
@@ -490,21 +498,16 @@ shinyServer(function(input, output, session) {
                            "Win Probability: ", qbelo_prob)
           )
 
-        fig <- fig %>% layout(
+        fig2 <- fig2 %>% layout(
           xaxis = list(title = 'Week of the Season'),
           yaxis = list(title = 'QB Elo within League Distribution')
         )
 
-        fig
+        fig2
         
         }
       }
-    
-    
-    
-  })
-  
-  
+    })
   
   
   ### Panel 4: All-Time QBs
@@ -686,14 +689,13 @@ shinyServer(function(input, output, session) {
 
       ### Placeholder for additional mutate based on radio button input
 
-
-      # Select QB's most-played-for-team's colors
-      team_tibble <- nfl_elo %>% filter(qb == input$panel4_qb) %>% select(team) %>% group_by(team) %>% count() %>% arrange(desc(n))
-      qb_team_colors <- team_pal(team_tibble$team[1])
       
-      # In an even more convoluted scheme, select the colors for the team he played for in each game
-      all_team_colors <- purrr::map(panel2_data$team, team_pal, 1) %>% as.vector() %>% t() %>% t()
-      panel4_data <- panel4_data %>% mutate(colors = all_team_colors)
+      # Select the colors for the team played for in each game
+      all_team_colors_1 <- purrr::map(panel4_data$team, team_pal, 1) %>% as.vector() %>% t() %>% t()
+      all_team_colors_2 <- purrr::map(panel4_data$team, team_pal, 2) %>% as.vector() %>% t() %>% t()
+      
+      panel4_data <- panel4_data %>% mutate(color1 = all_team_colors_1, color2 = all_team_colors_2)
+      
 
       # Case: QB never made the payoffs so the dataframe is empty (0 rows)
       if (nrow(panel4_data) == 0) {
@@ -710,17 +712,32 @@ shinyServer(function(input, output, session) {
             mode = 'lines+markers',
             x = ~ date,
             y = ~ qb_value_pre,
-            color = ~ team,
-            marker = list(color = rep(team_colors[1],nrow(panel2_data)),
+            marker = list(color = panel4_data$color1,
                           size = 14,
                           opacity = 0.6,
-                          line = list(width = 2)),            showlegend = FALSE,
-            fill = qb_team_colors[1],
-            text = ~ paste("<b>", season, "Week", week_of_season, ':</b>', result, score, '-', opponent_score, "<br>",
+                          line = list(width = 2,
+                                      color = panel4_data$color2)),
+            line = list(color = '#000000', weight = 1.5),
+            showlegend = FALSE,
+            text = ~ paste("<b>", team, '</b><br>',
+                           season, "Week", week_of_season, ':', result, score, '-', opponent_score, "<br>",
                            home_away, "vs", opponent, '<br>',
                            "Pre-Game QB Elo Rating:", qb_value_pre, '<br>',
-                           "Pre-Game Team Elo Rating:", elo_pre, '<br>',
-                           "Win Probability: ", elo_prob)
+                           "Post-Game QB Elo Rating:", qb_value_post, '<br>',
+                           "Win Probability: ", qbelo_prob)
+          )
+        
+        fig4 <- fig4 %>% 
+          layout(
+            xaxis = list(
+              title = 'Date',
+              type = "date",
+              range = c(panel4_data$date[1], panel4_data$date[nrow(panel1_data)])
+              ),
+              
+            yaxis = list(
+              title = 'Selected Statistic'
+            )
           )
 
         # fig <- fig %>%
