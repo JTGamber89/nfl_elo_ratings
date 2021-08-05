@@ -56,6 +56,7 @@ shinyUI(
                           includeMarkdown('panel1_description.md')
                         )
                       )),
+             
              tabPanel("QBs by Season",
                       sidebarLayout(
                         sidebarPanel(
@@ -95,6 +96,7 @@ shinyUI(
                                              inline = TRUE)
                         )
                       )),
+             
              tabPanel("Teams All-Time",
                       sidebarLayout(
                         sidebarPanel(
@@ -102,26 +104,26 @@ shinyUI(
                                       "Select Team of Interest",
                                       choices = nfl_teams,
                                       selected = nfl_teams[1]),
-                          h3("Career Record")
-                        #   h4("Overall:"),
-                        #   textOutput('panel3_record'),
-                        #   h4("At Home:"),
-                        #   textOutput('panel3_record_home'),
-                        #   h4("Away"),
-                        #   textOutput('panel3_record_away'),
-                        #   h4("With Team Favored:"),
-                        #   textOutput('panel3_record_fav'),
-                        #   h4("With Team as Underdog:"),
-                        #   textOutput('panel3_record_dog'),
-                        #   h4("Career Elo Rating Range"),
-                        #   plotOutput('panel3_team_elo_mini')
+                          h3("Career Record"),
+                          h4("Overall:"),
+                          textOutput('panel3_record'),
+                          h4("At Home:"),
+                          textOutput('panel3_record_home'),
+                          h4("Away"),
+                          textOutput('panel3_record_away'),
+                          h4("With Team Favored:"),
+                          textOutput('panel3_record_fav'),
+                          h4("With Team as Underdog:"),
+                          textOutput('panel3_record_dog'),
+                          h4("Career Elo Rating Range"),
+                          plotOutput('panel3_team_elo_mini')
                         ),
                         mainPanel(
-                        #   plotlyOutput('panel3_team_alltime'),
+                        #  plotlyOutput('panel3_team_alltime'),
                           radioButtons('panel3_stat',
                                        label = "Select the Statistic to Visualize",
                                        choices = c("Team Base Elo Rating" = 'elo_post',
-                                                   "QB-Adjusted Team Elo" = 'qbelo_post',
+                                                   "QB-Adjusted Team Elo Rating" = 'qbelo_post',
                                                    "Team Win Probability" = 'elo_prob',
                                                    "QB-Adjusted Win Probability" = 'qbelo_prob',
                                                    "Team Score" = 'score'),
@@ -136,13 +138,6 @@ shinyUI(
                           includeMarkdown('panel3_description.md')
                         )
                       )),
-             
-             
-             
-             
-             
-             
-             
              
              tabPanel("QBs All-Time",
                       sidebarLayout(
@@ -177,7 +172,7 @@ shinyUI(
                                        label = "Select the Statistic to Visualize",
                                        choices = c("QB Elo Rating" = 'qb_value_post',
                                                    "Team Base Elo Rating" = 'elo_post',
-                                                   "QB-Adjusted Team Elo" = 'qbelo_post',
+                                                   "QB-Adjusted Team Elo Rating" = 'qbelo_post',
                                                    "Team Win Probability" = 'elo_prob',
                                                    "QB-Adjusted Win Probability" = 'qbelo_prob',
                                                    "Team Score" = 'score'),

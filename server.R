@@ -516,232 +516,210 @@ shinyServer(function(input, output, session) {
     selected_team <- input$panel3_team
     playoffs <- input$panel3_rsp
     
-    panel4_subset <- nfl_elo %>% filter(qb == selected_qb)
+    panel3_subset <- nfl_elo %>% filter(team == selected_team)
     
     # Case: null set
     if (is.null(playoffs)){
       
       # show no record for null result
-      output$panel4_record <- renderText({ sprintf("0-0-0") })
-      output$panel4_record_home <- renderText({ sprintf("0-0-0") })
-      output$panel4_record_away <- renderText({ sprintf("0-0-0") })
-      output$panel4_record_fav <- renderText({ sprintf("0-0-0") })
-      output$panel4_record_dog <- renderText({ sprintf("0-0-0") })
-      output$panel4_record_higher <- renderText({ sprintf("0-0-0") })
-      output$panel4_record_lower <- renderText({ sprintf("0-0-0") })
+      output$panel3_record <- renderText({ sprintf("0-0-0") })
+      output$panel3_record_home <- renderText({ sprintf("0-0-0") })
+      output$panel3_record_away <- renderText({ sprintf("0-0-0") })
+      output$panel3_record_fav <- renderText({ sprintf("0-0-0") })
+      output$panel3_record_dog <- renderText({ sprintf("0-0-0") })
       
     } else {
       
       # Case: Player did not make playoffs and playoffs are selected
-      if (length(playoffs) == 1 & playoffs == 'playoff' & plyr::empty(panel4_subset %>% filter(!is.na(playoff)))){
-        output$panel4_record <- renderText({ sprintf("Never qualified for postseason") })
-        output$panel4_record_home <- renderText({ sprintf("0-0-0") })
-        output$panel4_record_away <- renderText({ sprintf("0-0-0") })
-        output$panel4_record_fav <- renderText({ sprintf("0-0-0") })
-        output$panel4_record_dog <- renderText({ sprintf("0-0-0") })
-        output$panel4_record_higher <- renderText({ sprintf("0-0-0") })
-        output$panel4_record_lower <- renderText({ sprintf("0-0-0") })
+      if (length(playoffs) == 1 & playoffs == 'playoff' & plyr::empty(panel3_subset %>% filter(!is.na(playoff)))){
+        output$panel3_record <- renderText({ sprintf("Never qualified for postseason") })
+        output$panel3_record_home <- renderText({ sprintf("0-0-0") })
+        output$panel3_record_away <- renderText({ sprintf("0-0-0") })
+        output$panel3_record_fav <- renderText({ sprintf("0-0-0") })
+        output$panel3_record_dog <- renderText({ sprintf("0-0-0") })
         
       } else {
         
         # Case: Regular season AND playoffs
         if (length(playoffs) == 2){
           
-          record <- panel4_subset %>% count(result)
-          record_home <- panel4_subset %>% filter(home_away == 'Home') %>%  count(result)
-          record_away <- panel4_subset %>% filter(home_away == 'Away') %>%  count(result)
-          record_fav <- panel4_subset %>% filter(qbelo_pre > opposing_qbelo_pre) %>%  count(result)
-          record_dog <- panel4_subset %>% filter(qbelo_pre < opposing_qbelo_pre) %>%  count(result)
-          record_higher <- panel4_subset %>% filter(qb_value_pre > opposing_qb_value_pre) %>%  count(result)
-          record_lower <- panel4_subset %>% filter(qb_value_pre < opposing_qb_value_pre) %>%  count(result)
+          record <- panel3_subset %>% count(result)
+          record_home <- panel3_subset %>% filter(home_away == 'Home') %>%  count(result)
+          record_away <- panel3_subset %>% filter(home_away == 'Away') %>%  count(result)
+          record_fav <- panel3_subset %>% filter(qbelo_pre > opposing_qbelo_pre) %>%  count(result)
+          record_dog <- panel3_subset %>% filter(qbelo_pre < opposing_qbelo_pre) %>%  count(result)
           
           # Case: Regular season only
         } else if (playoffs == 'reg_season'){
           
-          record <- panel4_subset %>% filter(is.na(playoff)) %>% count(result)
-          record_home <- panel4_subset %>% filter(is.na(playoff), home_away == 'Home') %>% count(result)
-          record_away <- panel4_subset %>% filter(is.na(playoff), home_away == 'Away') %>% count(result)
-          record_fav <- panel4_subset %>% filter(is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
-          record_dog <- panel4_subset %>% filter(is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
-          record_higher <- panel4_subset %>% filter(is.na(playoff), qb_value_pre > opposing_qb_value_pre) %>% count(result)
-          record_lower <- panel4_subset %>% filter(is.na(playoff), qb_value_pre < opposing_qb_value_pre) %>% count(result)
+          record <- panel3_subset %>% filter(is.na(playoff)) %>% count(result)
+          record_home <- panel3_subset %>% filter(is.na(playoff), home_away == 'Home') %>% count(result)
+          record_away <- panel3_subset %>% filter(is.na(playoff), home_away == 'Away') %>% count(result)
+          record_fav <- panel3_subset %>% filter(is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
+          record_dog <- panel3_subset %>% filter(is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
           
           # Case: playoffs only
         } else if (playoffs == 'playoff'){
           
-          record <- panel4_subset %>% filter(!is.na(playoff)) %>% count(result)
-          record_home <- panel4_subset %>% filter(!is.na(playoff), home_away == 'Home') %>% count(result)
-          record_away <- panel4_subset %>% filter(!is.na(playoff), home_away == 'Away') %>% count(result)
-          record_fav <- panel4_subset %>% filter(!is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
-          record_dog <- panel4_subset %>% filter(!is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
-          record_higher <- panel4_subset %>% filter(!is.na(playoff), qb_value_pre > opposing_qb_value_pre) %>% count(result)
-          record_lower <- panel4_subset %>% filter(!is.na(playoff), qb_value_pre < opposing_qb_value_pre) %>% count(result)
+          record <- panel3_subset %>% filter(!is.na(playoff)) %>% count(result)
+          record_home <- panel3_subset %>% filter(!is.na(playoff), home_away == 'Home') %>% count(result)
+          record_away <- panel3_subset %>% filter(!is.na(playoff), home_away == 'Away') %>% count(result)
+          record_fav <- panel3_subset %>% filter(!is.na(playoff), qbelo_pre > opposing_qbelo_pre) %>% count(result)
+          record_dog <- panel3_subset %>% filter(!is.na(playoff), qbelo_pre < opposing_qbelo_pre) %>% count(result)
         }
         
         # For non-null case, counts wins, losses, ties
         win <- ifelse('W' %in% record$result, record %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
         loss <- ifelse('L' %in% record$result, record %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
         tie <- ifelse('tie' %in% record$result, record %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
-        output$panel4_record <- renderText({ sprintf("%s-%s-%s", win, loss, tie) })
+        output$panel3_record <- renderText({ sprintf("%s-%s-%s", win, loss, tie) })
         
         win_home <- ifelse('W' %in% record_home$result, record_home %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
         loss_home <- ifelse('L' %in% record_home$result, record_home %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
         tie_home <- ifelse('tie' %in% record_home$result, record_home %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
-        output$panel4_record_home <- renderText({ sprintf("%s-%s-%s", win_home, loss_home, tie_home) })
+        output$panel3_record_home <- renderText({ sprintf("%s-%s-%s", win_home, loss_home, tie_home) })
         
         win_away <- ifelse('W' %in% record_away$result, record_away %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
         loss_away <- ifelse('L' %in% record_away$result, record_away %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
         tie_away <- ifelse('tie' %in% record_away$result, record_away %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
-        output$panel4_record_away <- renderText({ sprintf("%s-%s-%s", win_away, loss_away, tie_away) })
+        output$panel3_record_away <- renderText({ sprintf("%s-%s-%s", win_away, loss_away, tie_away) })
         
         win_fav <- ifelse('W' %in% record_fav$result, record_fav %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
         loss_fav <- ifelse('L' %in% record_fav$result, record_fav %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
         tie_fav <- ifelse('tie' %in% record_fav$result, record_fav %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
-        output$panel4_record_fav <- renderText({ sprintf("%s-%s-%s", win_fav, loss_fav, tie_fav) })
+        output$panel3_record_fav <- renderText({ sprintf("%s-%s-%s", win_fav, loss_fav, tie_fav) })
         
         win_dog <- ifelse('W' %in% record_dog$result, record_dog %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
         loss_dog <- ifelse('L' %in% record_dog$result, record_dog %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
         tie_dog <- ifelse('tie' %in% record_dog$result, record_dog %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
-        output$panel4_record_dog <- renderText({ sprintf("%s-%s-%s", win_dog, loss_dog, tie_dog) })
-        
-        win_higher <- ifelse('W' %in% record_higher$result, record_higher %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
-        loss_higher <- ifelse('L' %in% record_higher$result, record_higher %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
-        tie_higher <- ifelse('tie' %in% record_higher$result, record_higher %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
-        output$panel4_record_higher <- renderText({ sprintf("%s-%s-%s", win_higher, loss_higher, tie_higher) })
-        
-        win_lower <- ifelse('W' %in% record_lower$result, record_lower %>% filter(result == 'W') %>% select(n) %>% as.numeric(), 0)
-        loss_lower <- ifelse('L' %in% record_lower$result, record_lower %>% filter(result == 'L') %>% select(n) %>% as.numeric(), 0)
-        tie_lower <- ifelse('tie' %in% record_lower$result, record_lower %>% filter(result == 'tie') %>% select(n) %>% as.numeric(), 0)
-        output$panel4_record_lower <- renderText({ sprintf("%s-%s-%s", win_lower, loss_lower, tie_lower) })
-        
+        output$panel3_record_dog <- renderText({ sprintf("%s-%s-%s", win_dog, loss_dog, tie_dog) })
       }
     }
   })
   
   # Output sidebar plot of QB Elo ratings hist within all-time range
-  output$panel4_qb_elo_mini <- renderPlot({
+  output$panel3_team_elo_mini <- renderPlot({
     
     # Select Team colors for plotting
-    team_tibble <- nfl_elo %>% filter(qb == input$panel4_qb) %>% select(team) %>% group_by(team) %>% count() %>% arrange(desc(n))
-    qb_team_colors <- team_pal(team_tibble$team[1])
+    team_colors <- team_pal(input$panel3_team)
     
     # Plot histogram of qb_value_post
-    nfl_elo %>% filter(qb == input$panel4_qb) %>% ggplot() + 
-      geom_histogram(mapping = aes(x = qb_value_post), bins = 31, fill = qb_team_colors[1], color = qb_team_colors[2]) +
-      xlim(min(nfl_elo$qb_value_post), max(nfl_elo$qb_value_post)) +
-      xlab('Player Elo Rating within All-time Range') +
+    nfl_elo %>% filter(team == input$panel3_team) %>% ggplot() + 
+      geom_histogram(mapping = aes(x = qbelo_post), bins = 31, fill = team_colors[1], color = team_colors[2]) +
+      xlim(min(nfl_elo$qbelo_post), max(nfl_elo$qbelo_post)) +
+      xlab('Team Elo Rating within All-time Range') +
       theme_bw()
   })
   
-  # Plot QB Performance Lifetime
-  
-  output$panel4_qb_career <- renderPlotly({
-    
-    # Case: neither re season nor playoff selected, show nothing
-    if (length(input$panel4_rsp) == 0) {
-      ggplot() + theme_bw()
-    } else {
-      
-      # Case: don't filter (use reg season and playoff)
-      if(length(input$panel4_rsp) == 2) {
-        panel4_data <- nfl_elo %>%
-          filter(qb == input$panel4_qb) %>%
-          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
-      }
-      # Case: filter for reg season data
-      else if (input$panel4_rsp == 'reg_season') {
-        panel4_data <- nfl_elo %>%
-          filter(qb == input$panel4_qb, is.na(playoff)) %>%
-          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
-      }
-      # Case: filter for playoff data
-      else if (input$panel4_rsp == 'playoff') {
-        panel4_data <- nfl_elo %>%
-          filter(qb == input$panel4_qb, !is.na(playoff)) %>%
-          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
-      }
-      
-      
-      # Filter data a second time using input from the radio buttons
-      if (input$panel4_stat == 'qb_value_post'){
-        panel4_data <- panel4_data %>% mutate(plot_var = qb_value_post)
-        
-      } else if (input$panel4_stat == 'elo_post'){
-        panel4_data <- panel4_data %>% mutate(plot_var = elo_post)
-        
-      } else if (input$panel4_stat == 'qbelo_post'){
-        panel4_data <- panel4_data %>% mutate(plot_var = qbelo_post)
-        
-      } else if (input$panel4_stat == 'elo_prob'){
-        panel4_data <- panel4_data %>% mutate(plot_var = elo_prob)
-        
-      } else if (input$panel4_stat == 'qbelo_prob'){
-        panel4_data <- panel4_data %>% mutate(plot_var = qbelo_post)
-        
-      } else if (input$panel4_stat == 'score'){
-        panel4_data <- panel4_data %>% mutate(plot_var = score)
-        
-      }
-      
-      # Select the colors for the team played for in each game
-      all_team_colors_1 <- purrr::map(panel4_data$team, team_pal, 1) %>% as.vector() %>% t() %>% t()
-      all_team_colors_2 <- purrr::map(panel4_data$team, team_pal, 2) %>% as.vector() %>% t() %>% t()
-      
-      panel4_data <- panel4_data %>% mutate(color1 = all_team_colors_1, color2 = all_team_colors_2)
-      
-      
-      # Case: QB never made the payoffs so the dataframe is empty (0 rows)
-      if (nrow(panel4_data) == 0) {
-        ggplot() +
-          theme_bw()
-      } else {
-        
-        # Print figure with plotly
-        fig4 <- panel4_data %>% plot_ly()
-        
-        fig4 <- fig4 %>%
-          add_trace(
-            type = 'scatter',
-            mode = 'lines+markers',
-            x = ~ date,
-            y = ~ plot_var,
-            marker = list(color = panel4_data$color1,
-                          size = 14,
-                          opacity = 0.6,
-                          line = list(width = 2,
-                                      color = panel4_data$color2)),
-            line = list(color = '#000000', weight = 1.5),
-            showlegend = FALSE,
-            text = ~ paste("<b>", team, '</b><br>',
-                           season, "Week", week_of_season, ':', result, score, '-', opponent_score, "<br>",
-                           home_away, "vs", opponent, '<br>',
-                           "Pre-Game QB Elo Rating:", qb_value_pre, '<br>',
-                           "Post-Game QB Elo Rating:", qb_value_post, '<br>',
-                           "Pre-Game Team Elo Rating (QB-Adjusted):", qbelo_pre, '<br>',
-                           "Post-Game Team Elo Rating (QB-Adjusted):", qbelo_post, '<br>',
-                           "Win Probability: ", qbelo_prob)
-          )
-        
-        fig4 <- fig4 %>% 
-          layout(
-            xaxis = list(
-              title = 'Date',
-              type = "date",
-              range = c(panel4_data$date[1], panel4_data$date[nrow(panel1_data)])
-            ),
-            
-            yaxis = list(
-              title = 'Selected Statistic'
-            )
-          )
-        
-        fig4
-        
-      }
-    }
-    
-  })
-  
+  # # Plot QB Performance Lifetime
+  # 
+  # output$panel4_qb_career <- renderPlotly({
+  #   
+  #   # Case: neither re season nor playoff selected, show nothing
+  #   if (length(input$panel4_rsp) == 0) {
+  #     ggplot() + theme_bw()
+  #   } else {
+  #     
+  #     # Case: don't filter (use reg season and playoff)
+  #     if(length(input$panel4_rsp) == 2) {
+  #       panel4_data <- nfl_elo %>%
+  #         filter(qb == input$panel4_qb) %>%
+  #         mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+  #     }
+  #     # Case: filter for reg season data
+  #     else if (input$panel4_rsp == 'reg_season') {
+  #       panel4_data <- nfl_elo %>%
+  #         filter(qb == input$panel4_qb, is.na(playoff)) %>%
+  #         mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+  #     }
+  #     # Case: filter for playoff data
+  #     else if (input$panel4_rsp == 'playoff') {
+  #       panel4_data <- nfl_elo %>%
+  #         filter(qb == input$panel4_qb, !is.na(playoff)) %>%
+  #         mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+  #     }
+  #     
+  #     
+  #     # Filter data a second time using input from the radio buttons
+  #     if (input$panel4_stat == 'qb_value_post'){
+  #       panel4_data <- panel4_data %>% mutate(plot_var = qb_value_post)
+  #       
+  #     } else if (input$panel4_stat == 'elo_post'){
+  #       panel4_data <- panel4_data %>% mutate(plot_var = elo_post)
+  #       
+  #     } else if (input$panel4_stat == 'qbelo_post'){
+  #       panel4_data <- panel4_data %>% mutate(plot_var = qbelo_post)
+  #       
+  #     } else if (input$panel4_stat == 'elo_prob'){
+  #       panel4_data <- panel4_data %>% mutate(plot_var = elo_prob)
+  #       
+  #     } else if (input$panel4_stat == 'qbelo_prob'){
+  #       panel4_data <- panel4_data %>% mutate(plot_var = qbelo_post)
+  #       
+  #     } else if (input$panel4_stat == 'score'){
+  #       panel4_data <- panel4_data %>% mutate(plot_var = score)
+  #       
+  #     }
+  #     
+  #     # Select the colors for the team played for in each game
+  #     all_team_colors_1 <- purrr::map(panel4_data$team, team_pal, 1) %>% as.vector() %>% t() %>% t()
+  #     all_team_colors_2 <- purrr::map(panel4_data$team, team_pal, 2) %>% as.vector() %>% t() %>% t()
+  #     
+  #     panel4_data <- panel4_data %>% mutate(color1 = all_team_colors_1, color2 = all_team_colors_2)
+  #     
+  #     
+  #     # Case: QB never made the payoffs so the dataframe is empty (0 rows)
+  #     if (nrow(panel4_data) == 0) {
+  #       ggplot() +
+  #         theme_bw()
+  #     } else {
+  #       
+  #       # Print figure with plotly
+  #       fig4 <- panel4_data %>% plot_ly()
+  #       
+  #       fig4 <- fig4 %>%
+  #         add_trace(
+  #           type = 'scatter',
+  #           mode = 'lines+markers',
+  #           x = ~ date,
+  #           y = ~ plot_var,
+  #           marker = list(color = panel4_data$color1,
+  #                         size = 14,
+  #                         opacity = 0.6,
+  #                         line = list(width = 2,
+  #                                     color = panel4_data$color2)),
+  #           line = list(color = '#000000', weight = 1.5),
+  #           showlegend = FALSE,
+  #           text = ~ paste("<b>", team, '</b><br>',
+  #                          season, "Week", week_of_season, ':', result, score, '-', opponent_score, "<br>",
+  #                          home_away, "vs", opponent, '<br>',
+  #                          "Pre-Game QB Elo Rating:", qb_value_pre, '<br>',
+  #                          "Post-Game QB Elo Rating:", qb_value_post, '<br>',
+  #                          "Pre-Game Team Elo Rating (QB-Adjusted):", qbelo_pre, '<br>',
+  #                          "Post-Game Team Elo Rating (QB-Adjusted):", qbelo_post, '<br>',
+  #                          "Win Probability: ", qbelo_prob)
+  #         )
+  #       
+  #       fig4 <- fig4 %>% 
+  #         layout(
+  #           xaxis = list(
+  #             title = 'Date',
+  #             type = "date",
+  #             range = c(panel4_data$date[1], panel4_data$date[nrow(panel1_data)])
+  #           ),
+  #           
+  #           yaxis = list(
+  #             title = 'Selected Statistic'
+  #           )
+  #         )
+  #       
+  #       fig4
+  #       
+  #     }
+  #   }
+  #   
+  # })
+  # 
   
   
   
