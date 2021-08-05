@@ -1,0 +1,1 @@
+The Teams All-Time Panel allows the user to explore the trends across the entire career of an NFL Quarterback.
