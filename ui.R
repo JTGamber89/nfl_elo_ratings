@@ -8,8 +8,8 @@
 library(shiny)
 
 shinyUI(
-  navbarPage("Title",
-             tabPanel("Welcome!",
+  navbarPage("NFL Performanace Visualization",
+             tabPanel("Home",
                       includeMarkdown('welcome_page.md')),
              tabPanel("Teams by Season",
                       sidebarLayout(
@@ -93,7 +93,8 @@ shinyUI(
                                              choices = c("Regular Season" = 'reg_season',
                                                "Playoffs" = 'playoff'),
                                              selected = 'reg_season',
-                                             inline = TRUE)
+                                             inline = TRUE),
+                          includeMarkdown('panel2_description.md')
                         )
                       )),
              

@@ -1,1 +1,7 @@
 The Teams All-Time Panel allows the user to explore the trends across the entire career of an NFL Quarterback.
+
+Start by selecting the team you are interested in from the drop-down menu, or begin typing in the drop-down box to get suggestions that match what you have typed.  Once you have selected a team, that team's all-time record box will populate, showing the record of that team broken up by home or away, and favored or as the underdog.  Below the record listings, a histogram is also populated, showing the distribution of career Elo ratings for that player in the range of all NFL QBs who have played in the Super Bowl Era.
+
+The main plot shows one of several statistics for the team of interest, tracked across the entirety of that team's existence in the league.  When the plot first loads, the data will seem very congested, particularly for teams that have been in the NFL since the dawn of the Super Bowl Era.  Fortunately, the figure was built with [Plotly](https://plotly.com/r/), and has interactive pan and zoom features!
+
+You can click and drag anywhere on the plot to select a boxed region to zoom in on.  To return to the default zoom, double-click anywhere on the plot.  In addition, by clicking and dragging in the middle of the x-axis, the plot will track forward or backward in time, allowing you to explore the long histories of the NFL's oldest teams.  Finally, by clicking on the far right or far left of the x-axis and dragging the mouse, you can change the scale on the plot to pinch the data in tighter, or zoom in further.

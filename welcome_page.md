@@ -10,5 +10,7 @@ FiveThirtyEight produces Elo ratings every year for both NFL teams and quarterba
 
 The tabs to the right allow a user to visualize the Elo rating trace of an NFL team or QB throughout the balance of a particular season or their lifetime in the league.  The main plots in each tab allow the user to zoom in or out, or pan across the plot to get a more precise look at a subset of the data if they desire.  The plots also have rollover interactivity, showing pop-up stats if the user mouses over a particular game.  Enjoy!
 
+**Note:** Teams are listed as their present-day incarnation.  Therefore, all Houston Oilers records are listed under the Tennessee Titans team name, all St. Louis Cardinals records are listed under the Arizona Cardinals name, and so on.  In addition, team names reflect the most up-to-date team naming available in the R Programming Language package *teamcolors*.  Therefore, the Washington Football Team is listed under the name Washington Redskins, and the Las Vegas Raiders are listed under the team name Oakland Raiders.  I have contacted the developer of this package about updating the team database and am awaiting a response.
+
 
 
