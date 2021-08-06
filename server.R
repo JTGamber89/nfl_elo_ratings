@@ -597,13 +597,13 @@ shinyServer(function(input, output, session) {
     }
   })
   
-  # Output sidebar plot of QB Elo ratings hist within all-time range
+  # Output sidebar plot of Team Elo ratings hist within all-time range
   output$panel3_team_elo_mini <- renderPlot({
     
     # Select Team colors for plotting
     team_colors <- team_pal(input$panel3_team)
     
-    # Plot histogram of qb_value_post
+    # Plot histogram of team Elo Ranking All-Time
     nfl_elo %>% filter(team == input$panel3_team) %>% ggplot() + 
       geom_histogram(mapping = aes(x = qbelo_post), bins = 31, fill = team_colors[1], color = team_colors[2]) +
       xlim(min(nfl_elo$qbelo_post), max(nfl_elo$qbelo_post)) +
@@ -611,121 +611,105 @@ shinyServer(function(input, output, session) {
       theme_bw()
   })
   
-  # # Plot QB Performance Lifetime
-  # 
-  # output$panel4_qb_career <- renderPlotly({
-  #   
-  #   # Case: neither re season nor playoff selected, show nothing
-  #   if (length(input$panel4_rsp) == 0) {
-  #     ggplot() + theme_bw()
-  #   } else {
-  #     
-  #     # Case: don't filter (use reg season and playoff)
-  #     if(length(input$panel4_rsp) == 2) {
-  #       panel4_data <- nfl_elo %>%
-  #         filter(qb == input$panel4_qb) %>%
-  #         mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
-  #     }
-  #     # Case: filter for reg season data
-  #     else if (input$panel4_rsp == 'reg_season') {
-  #       panel4_data <- nfl_elo %>%
-  #         filter(qb == input$panel4_qb, is.na(playoff)) %>%
-  #         mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
-  #     }
-  #     # Case: filter for playoff data
-  #     else if (input$panel4_rsp == 'playoff') {
-  #       panel4_data <- nfl_elo %>%
-  #         filter(qb == input$panel4_qb, !is.na(playoff)) %>%
-  #         mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
-  #     }
-  #     
-  #     
-  #     # Filter data a second time using input from the radio buttons
-  #     if (input$panel4_stat == 'qb_value_post'){
-  #       panel4_data <- panel4_data %>% mutate(plot_var = qb_value_post)
-  #       
-  #     } else if (input$panel4_stat == 'elo_post'){
-  #       panel4_data <- panel4_data %>% mutate(plot_var = elo_post)
-  #       
-  #     } else if (input$panel4_stat == 'qbelo_post'){
-  #       panel4_data <- panel4_data %>% mutate(plot_var = qbelo_post)
-  #       
-  #     } else if (input$panel4_stat == 'elo_prob'){
-  #       panel4_data <- panel4_data %>% mutate(plot_var = elo_prob)
-  #       
-  #     } else if (input$panel4_stat == 'qbelo_prob'){
-  #       panel4_data <- panel4_data %>% mutate(plot_var = qbelo_post)
-  #       
-  #     } else if (input$panel4_stat == 'score'){
-  #       panel4_data <- panel4_data %>% mutate(plot_var = score)
-  #       
-  #     }
-  #     
-  #     # Select the colors for the team played for in each game
-  #     all_team_colors_1 <- purrr::map(panel4_data$team, team_pal, 1) %>% as.vector() %>% t() %>% t()
-  #     all_team_colors_2 <- purrr::map(panel4_data$team, team_pal, 2) %>% as.vector() %>% t() %>% t()
-  #     
-  #     panel4_data <- panel4_data %>% mutate(color1 = all_team_colors_1, color2 = all_team_colors_2)
-  #     
-  #     
-  #     # Case: QB never made the payoffs so the dataframe is empty (0 rows)
-  #     if (nrow(panel4_data) == 0) {
-  #       ggplot() +
-  #         theme_bw()
-  #     } else {
-  #       
-  #       # Print figure with plotly
-  #       fig4 <- panel4_data %>% plot_ly()
-  #       
-  #       fig4 <- fig4 %>%
-  #         add_trace(
-  #           type = 'scatter',
-  #           mode = 'lines+markers',
-  #           x = ~ date,
-  #           y = ~ plot_var,
-  #           marker = list(color = panel4_data$color1,
-  #                         size = 14,
-  #                         opacity = 0.6,
-  #                         line = list(width = 2,
-  #                                     color = panel4_data$color2)),
-  #           line = list(color = '#000000', weight = 1.5),
-  #           showlegend = FALSE,
-  #           text = ~ paste("<b>", team, '</b><br>',
-  #                          season, "Week", week_of_season, ':', result, score, '-', opponent_score, "<br>",
-  #                          home_away, "vs", opponent, '<br>',
-  #                          "Pre-Game QB Elo Rating:", qb_value_pre, '<br>',
-  #                          "Post-Game QB Elo Rating:", qb_value_post, '<br>',
-  #                          "Pre-Game Team Elo Rating (QB-Adjusted):", qbelo_pre, '<br>',
-  #                          "Post-Game Team Elo Rating (QB-Adjusted):", qbelo_post, '<br>',
-  #                          "Win Probability: ", qbelo_prob)
-  #         )
-  #       
-  #       fig4 <- fig4 %>% 
-  #         layout(
-  #           xaxis = list(
-  #             title = 'Date',
-  #             type = "date",
-  #             range = c(panel4_data$date[1], panel4_data$date[nrow(panel1_data)])
-  #           ),
-  #           
-  #           yaxis = list(
-  #             title = 'Selected Statistic'
-  #           )
-  #         )
-  #       
-  #       fig4
-  #       
-  #     }
-  #   }
-  #   
-  # })
-  # 
-  
-  
-  
-  
-  
-  
+  # Plot Team Performance All-time
+
+  output$panel3_team_alltime <- renderPlotly({
+
+    # Case: neither reg season nor playoff selected, show nothing
+    if (length(input$panel3_rsp) == 0) {
+      ggplot() + theme_bw()
+    } else {
+
+      # Case: don't filter (use reg season and playoff)
+      if(length(input$panel3_rsp) == 2) {
+        panel3_data <- nfl_elo %>%
+          filter(team == input$panel3_team) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+      }
+      # Case: filter for reg season data
+      else if (input$panel3_rsp == 'reg_season') {
+        panel3_data <- nfl_elo %>%
+          filter(team == input$panel3_team, is.na(playoff)) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+      }
+      # Case: filter for playoff data
+      else if (input$panel3_rsp == 'playoff') {
+        panel3_data <- nfl_elo %>%
+          filter(team == input$panel3_team, !is.na(playoff)) %>%
+          mutate(date = lubridate::as_date(lubridate::mdy(date)), .after = season)
+      }
+
+      # Filter data a second time using input from the radio buttons
+      if (input$panel3_stat == 'elo_post'){
+        panel3_data <- panel3_data %>% mutate(plot_var = elo_post)
+
+      } else if (input$panel3_stat == 'qbelo_post'){
+        panel3_data <- panel3_data %>% mutate(plot_var = qbelo_post)
+
+      } else if (input$panel3_stat == 'elo_prob'){
+        panel3_data <- panel3_data %>% mutate(plot_var = elo_prob)
+
+      } else if (input$panel3_stat == 'qbelo_prob'){
+        panel3_data <- panel3_data %>% mutate(plot_var = qbelo_post)
+
+      } else if (input$panel3_stat == 'score'){
+        panel3_data <- panel3_data %>% mutate(plot_var = score)
+      }
+
+      # Select the colors for the team selected
+      team_colors <- team_pal(panel3_data$team)
+
+      # Case: Team never made the playoffs so the dataframe is empty (0 rows)
+      #  This should never be accessed, but for the sake of completeness
+      if (nrow(panel3_data) == 0) {
+        ggplot() +
+          theme_bw()
+      } else {
+
+        # Print figure with plotly
+        fig3 <- panel3_data %>% plot_ly()
+
+        fig3 <- fig3 %>%
+          add_trace(
+            type = 'scatter',
+            mode = 'lines+markers',
+            x = ~ date,
+            y = ~ plot_var,
+            marker = list(color = rep(team_colors[1], nrow(panel3_data)),
+                          size = 14,
+                          opacity = 0.9,
+                          line = list(width = 2,
+                                      color = rep(team_colors[2], nrow(panel3_data)))),
+            line = list(color = '#000000', weight = 1.5),
+            showlegend = FALSE,
+            text = ~ paste("<b>", team, '</b><br>',
+                           season, "Week", week_of_season, ':', result, score, '-', opponent_score, "<br>",
+                           home_away, "vs", opponent, '<br>',
+                           "Pre-Game Team Elo Rating (QB-Adjusted):", qbelo_pre, '<br>',
+                           "Post-Game Team Elo Rating (QB-Adjusted):", qbelo_post, '<br>',
+                           "Win Probability: ", qbelo_prob)
+          )
+
+        fig3 <- fig3 %>%
+          layout(
+            xaxis = list(
+              title = 'Date',
+              type = "date",
+              range = c(panel3_data$date[1], panel3_data$date[nrow(panel3_data)])
+            ),
+
+            yaxis = list(
+              title = 'Selected Statistic'
+            )
+          )
+
+        fig3
+
+      }
+    }
+
+  })
+
   
   ### Panel 4: All-Time QBs
   
@@ -940,7 +924,7 @@ shinyServer(function(input, output, session) {
             y = ~ plot_var,
             marker = list(color = panel4_data$color1,
                           size = 14,
-                          opacity = 0.6,
+                          opacity = 0.9,
                           line = list(width = 2,
                                       color = panel4_data$color2)),
             line = list(color = '#000000', weight = 1.5),
@@ -960,7 +944,7 @@ shinyServer(function(input, output, session) {
             xaxis = list(
               title = 'Date',
               type = "date",
-              range = c(panel4_data$date[1], panel4_data$date[nrow(panel1_data)])
+              range = c(panel4_data$date[1], panel4_data$date[nrow(panel4_data)])
               ),
               
             yaxis = list(

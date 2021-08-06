@@ -115,11 +115,11 @@ shinyUI(
                           textOutput('panel3_record_fav'),
                           h4("With Team as Underdog:"),
                           textOutput('panel3_record_dog'),
-                          h4("Career Elo Rating Range"),
+                          h4("All-Time Elo Rating Range"),
                           plotOutput('panel3_team_elo_mini')
                         ),
                         mainPanel(
-                        #  plotlyOutput('panel3_team_alltime'),
+                          plotlyOutput('panel3_team_alltime'),
                           radioButtons('panel3_stat',
                                        label = "Select the Statistic to Visualize",
                                        choices = c("Team Base Elo Rating" = 'elo_post',
