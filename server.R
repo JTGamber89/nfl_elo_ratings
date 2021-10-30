@@ -684,6 +684,7 @@ shinyServer(function(input, output, session) {
             showlegend = FALSE,
             text = ~ paste("<b>", team, '</b><br>',
                            season, "Week", week_of_season, ':', result, score, '-', opponent_score, "<br>",
+                           "Starting QB:", qb, '<br>',
                            home_away, "vs", opponent, '<br>',
                            "Pre-Game Team Elo Rating (QB-Adjusted):", qbelo_pre, '<br>',
                            "Post-Game Team Elo Rating (QB-Adjusted):", qbelo_post, '<br>',
