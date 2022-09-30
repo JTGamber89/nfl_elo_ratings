@@ -196,12 +196,18 @@ qbelo2_post | Away team's quarterback-adjusted base rating after the game
 score1 | Home team's score
 score2 | Away team's score
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-    - [ ] Nested Feature
+- [ ] Correct occurrences of games from consecutive weeks being displayed
+on a single week's column
+- [ ] Add "Explore Elo Ratings" Panel to allow users to test out how Elo
+ratings work interactively
+- [ ] Add separating lines between the end of one season and the beginning
+of the next in the "Career" panels
 
 See the [open issues](https://github.com/JTG89/nfl_elo_ratings/issues) for a
 full list of proposed features (and known issues).
