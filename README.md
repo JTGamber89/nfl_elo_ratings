@@ -25,12 +25,12 @@
 
 <h3 align="center">NFL Elo Rating Visualization</h3>
 
-  <p align="center">
+  <p align="left">
     This project sources Elo Ratings from FiveThirtyEight for National Football
     League teams and Quarterbacks and uses the R Shiny platform to provide a
     concise and useful user interface to help others explore the data.
     All of the data used in this project is sourced from FiveThirtyEight's
-    [The Complete History of the NFL](https://projects.fivethirtyeight.com/complete-history-of-the-nfl/)
+    [![The Complete History of the NFL]](https://projects.fivethirtyeight.com/complete-history-of-the-nfl/)
     page, and is  the property of FiveThirtyEight and the National Football
     League.
 
@@ -213,8 +213,8 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [contributors-shield]: https://img.shields.io/github/contributors/github_username/repo_name.svg?style=for-the-badge
-[contributors-url]: https://github.com/github_username/repo_name/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
+[contributors-url]: https://github.com/JTG89/nfl_elo_ratings/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/JTG89/nfl_elo_ratings.svg?style=for-the-badge
 [forks-url]: https://github.com/github_username/repo_name/network/members
 [stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
 [stars-url]: https://github.com/github_username/repo_name/stargazers
