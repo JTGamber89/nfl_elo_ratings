@@ -212,7 +212,7 @@ Project Link: [https://github.com/JTG89/nfl_elo_ratings](https://github.com/JTG8
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributorsJTG89/nfl_elo_ratings.svg?style=for-the-badge
+[contributors-shield]: https://img.shields.io/github/contributors/JTG89/nfl_elo_ratings.svg?style=for-the-badge
 [contributors-url]: https://github.com/JTG89/nfl_elo_ratings/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/JTG89/nfl_elo_ratings.svg?style=for-the-badge
 [forks-url]: https://github.com/JTG89/nfl_elo_ratings/network/members
