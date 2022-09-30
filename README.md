@@ -203,8 +203,6 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - jgamber89@gmail.com
-
 Project Link: [https://github.com/JTG89/nfl_elo_ratings](https://github.com/JTG89/nfl_elo_ratings)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
