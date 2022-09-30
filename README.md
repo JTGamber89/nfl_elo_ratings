@@ -74,6 +74,36 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
+Elo Ratings are a method for calculating the relative skill levels in a
+zero-sum game such as chess, or in this case, American football.  This rating
+system was created by Arpad Elo, a Hungarian-American physics professor, and
+the creator of the system.
+
+Elo ratings were originally developed for use in competitive chess, but has
+since been applied as a rating system in American football, baseball,
+basketball, billiards, table tennis, and many other competitive events such
+as e-sports.  This particular implementation focuses on the National Football
+League (NFL) and Elo ratings of its member teams since the beginning of the
+Super Bowl Era, which began with the 1966 regular season.
+
+Elo ratings are a zero-sum system, with the victorious team "winning" a
+number of points from the losing team after every game.  No additional points
+are ever created or destroyed.  The ratings of the teams prior to the game
+determine how many points are won by the victor and surrendered by the loser.
+A winner who had a higher rating entering the game will earn fewer points from
+a weak opponent than would a lower ranked winner which beat a team with a
+higher ranking.  Elo ratings are also not considered an "absolute" metric of
+skill, meaning that they have no meaning outside the contained pool of teams
+and games (i.e., each season).  Therefore, ratings between various years cannot
+necessarily be fairly compared.
+
+The data used to develop this project is sourced from FiveThirtyEight and their
+excellent [The Complete History Of The NFL](https://projects.fivethirtyeight.com/complete-history-of-the-nfl/)
+project.  The data contains the results of every NFL game played since the
+beginning of the 1966 regular season, and is current through Super Bowl LV
+(55), played in February of 2021 (2021 season data will be added when it is
+available on FiveThirtyEight's GitHub page).
+
 <!--[![Product Name Screen Shot][product-screenshot]](https://example.com)-->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -84,8 +114,6 @@
 * [![Shiny][Shiny]][Shiny_url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- GETTING STARTED -->
 ## Getting Started
