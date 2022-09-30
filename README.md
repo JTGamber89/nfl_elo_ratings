@@ -215,7 +215,9 @@ Project Link: [https://github.com/JTG89/nfl_elo_ratings](https://github.com/JTG8
 ## Acknowledgments
 
 I could not have begun this project without the teaching and encouragement from
-my professor, Dr. Joe Yurko at the University of Pittsburgh
+my professor, Dr. Joe Yurko at the University of Pittsburgh, and I would like
+to thank him for his time and attention during my graduate work and for
+inspiring my interest in sports data science.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
