@@ -29,7 +29,6 @@
     This project sources Elo Ratings from FiveThirtyEight for National Football
     League teams and Quarterbacks and uses the R Shiny platform to provide a
     concise and useful user interface to help others explore the data.
-
     <br />
     <a href="https://github.com/JTG89/nfl_elo_ratings"><strong>Explore the docs »</strong></a>
     <br />
