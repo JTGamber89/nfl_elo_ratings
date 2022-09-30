@@ -23,25 +23,17 @@
 [![LinkedIn][linkedin-shield]][linkedin-url]
 
 
-
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <a href="https://github.com/JTG89/nfl_elo_ratings">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
-  </a>
-
 <h3 align="center">NFL Elo Rating Visualization</h3>
 
   <p align="center">
     This project sources Elo Ratings from FiveThirtyEight for National Football
     League teams and Quarterbacks and uses the R Shiny platform to provide a
     concise and useful user interface to help others explore the data.
-
     All of the data used in this project is sourced from FiveThirtyEight's
     [The Complete History of the NFL](https://projects.fivethirtyeight.com/complete-history-of-the-nfl/)
     page, and is  the property of FiveThirtyEight and the National Football
     League.
+
     <br />
     <a href="https://github.com/github_username/repo_name"><strong>Explore the docs »</strong></a>
     <br />
