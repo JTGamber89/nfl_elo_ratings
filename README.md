@@ -118,57 +118,52 @@ available on FiveThirtyEight's GitHub page).
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To generate your own copy of the Elo rating visualization tool, you'll need
+copies of the `global.R`, `server.R` and `ui.R` file from this repo, which
+can then be run using R Studio or any R-supported IDE.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
+To work with the scripts required to run the Elo rating visualization tool,
+you will need to download R from the project website and R Studio (soon to be
+re-branded as Posit) from its project site as well.  The links to each are
+provided below.  R Studio is required because Shiny is a direct product of R
+Studio and the links between the `global.R`, `server.R`, and `ui.R` files are
+not inherently understood by the base R language.
+
+* R Statistical Programming Language
   ```sh
-  npm install npm@latest -g
+  https://www.r-project.org/
+  ```
+
+* R Studio
+  ```sh
+  https://www.rstudio.com/products/rstudio/download/
   ```
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
    git clone https://github.com/JTG89/nfl_elo_ratings.git
    ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
+2. Create a local repo to run the files locally
+
+3. Open either `ui.R` or `server.R` and select the `Run App` button at the
+  top-right of the IDE to start the visualization tool.
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 
 
 <!-- ROADMAP -->
 ## Roadmap
 
 - [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/JTG89/nfl_elo_ratings/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/JTG89/nfl_elo_ratings/issues) for a
+full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -177,10 +172,14 @@ See the [open issues](https://github.com/JTG89/nfl_elo_ratings/issues) for a ful
 <!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to
+learn, inspire, and create. Any contributions you make are **greatly**
+**appreciated**.
 
-If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
+If you have a suggestion that would make this better, please fork the repo and
+create a pull request. You can also simply open an issue with the tag
+"enhancement".
+Don't forget to give the project a star if you found it enjoyable! And thank you!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -215,9 +214,8 @@ Project Link: [https://github.com/JTG89/nfl_elo_ratings](https://github.com/JTG8
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* []()
-* []()
-* []()
+I could not have begun this project without the teaching and encouragement from
+my professor, Dr. Joe Yurko at the University of Pittsburgh
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
