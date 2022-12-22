@@ -145,7 +145,7 @@ not inherently understood by the base R language.
 
 1. Clone the repo
    ```sh
-   git clone https://github.com/JTG89/nfl_elo_ratings.git
+   git clone https://github.com/JTGamber89/nfl_elo_ratings.git
    ```
 2. Create a local repo to run the files locally
 
@@ -250,7 +250,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Project Link: [https://github.com/JTG89/nfl_elo_ratings](https://github.com/JTG89/nfl_elo_ratings)
+Project Link: [https://github.com/JTGamber89/nfl_elo_ratings](https://github.com/JTGamber89/nfl_elo_ratings)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -270,16 +270,16 @@ inspiring my interest in sports data science.
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/JTG89/nfl_elo_ratings.svg?style=for-the-badge
-[contributors-url]: https://github.com/JTG89/nfl_elo_ratings/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/JTG89/nfl_elo_ratings.svg?style=for-the-badge
-[forks-url]: https://github.com/JTG89/nfl_elo_ratings/network/members
-[stars-shield]: https://img.shields.io/github/stars/JTG89/nfl_elo_ratings.svg?style=for-the-badge
-[stars-url]: https://github.com/JTG89/nfl_elo_ratings/stargazers
-[issues-shield]: https://img.shields.io/github/issues/JTG89/nfl_elo_ratings.svg?style=for-the-badge
-[issues-url]: https://github.com/JTG89/nfl_elo_ratings/issues
-[license-shield]: https://img.shields.io/github/license/JTG89/nfl_elo_ratings.svg?style=for-the-badge
-[license-url]: https://github.com/JTG89/nfl_elo_ratings/blob/master/LICENSE.txt
+[contributors-shield]: https://img.shields.io/github/contributors/JTGamber89/nfl_elo_ratings.svg?style=for-the-badge
+[contributors-url]: https://github.com/JTGamber89/nfl_elo_ratings/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/JTGamber89/nfl_elo_ratings.svg?style=for-the-badge
+[forks-url]: https://github.com/JTGamber89/nfl_elo_ratings/network/members
+[stars-shield]: https://img.shields.io/github/stars/JTGamber89/nfl_elo_ratings.svg?style=for-the-badge
+[stars-url]: https://github.com/JTGamber89/nfl_elo_ratings/stargazers
+[issues-shield]: https://img.shields.io/github/issues/JTGamber89/nfl_elo_ratings.svg?style=for-the-badge
+[issues-url]: https://github.com/JTGamber89/nfl_elo_ratings/issues
+[license-shield]: https://img.shields.io/github/license/JTGamber89/nfl_elo_ratings.svg?style=for-the-badge
+[license-url]: https://github.com/JTGamber89/nfl_elo_ratings/blob/master/LICENSE.txt
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://linkedin.com/in/linkedin_username
 [product-screenshot]: images/screenshot.png
